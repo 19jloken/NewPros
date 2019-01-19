@@ -8,47 +8,51 @@
 // //autonomous routines
 void autonomous1 ()
 {
-if (getSideSensor()) //if on blue side
+if (getSideSensor()) //if on red side
 {
-  if(getAutoSensor())//  if in front tile by flags
+  if(getAutoSensor())//  if in front red  tile by flags
   {
   addCommand(driveStraight, 2800);
   addCommand(intake,127);
   addCommand(driveStraight, -2800);
-  addCommand(turn, -850);
+  addCommand(turn, -1340);
   addCommand(pause, drive);
   addCommand(end, intake);
   addCommand(intake, -127);
   addCommand(launcher);
-  addCommand(turn, 210);
-  addCommand(driveStraight, -3550);
-  addCommand(driveStraight, 700);
-  addCommand(turn, 600);
+  addCommand(turn, 650); //increase I think
   addCommand(end, intake);
   addCommand(intake, -127);
   addCommand(driveStraight, 800);
   addCommand(driveStraight, 800);
   addCommand(driveStraight, 800);
 }
-else// if in back tile by posts
+else// if in back blue tile by posts
 {
-
+  addCommand(intake,127);
+  addCommand(driveStraight, 2950);
+  addCommand(driveStraight, -400);
+  addCommand(turn, -1220);
+  addCommand(pause, drive);
+  addCommand(end, intake);
+  addCommand(turn, 2200);
+  addCommand(driveStraight, -3050);
 }
 }
-else //if on red side
+else //if on blue side
 {
   if(getAutoSensor())//   if in front tile by flags
   {
     addCommand(driveStraight, 2800);
     addCommand(intake,127);
     addCommand(driveStraight, -2800);
-    addCommand(turn, 900);
+    addCommand(turn, -900);
     addCommand(pause, drive);
     addCommand(end, intake);
     addCommand(intake, -127);
     addCommand(launcher);
-    addCommand(driveStraight, -3750);
-    addCommand(driveStraight, 800);
+    addCommand(driveStraight, 3750);
+    addCommand(driveStraight, -800);
     addCommand(turn, -500);
     addCommand(end, intake);
     addCommand(intake, -127);
@@ -58,7 +62,13 @@ else //if on red side
 }
 else// if in back tile by posts
 {
-
+  addCommand(driveStraight, 2800);
+  addCommand(intake,127);
+  addCommand(turn, -600);
+  addCommand(pause, drive);
+  addCommand(end, intake);
+  addCommand(turn, -1250);
+  addCommand(driveStraight, 1200);
 }
 }
 }
