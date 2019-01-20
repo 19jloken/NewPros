@@ -27,48 +27,50 @@ if (getSideSensor()) //if on red side
   addCommand(driveStraight, 800);
   addCommand(driveStraight, 800);
 }
-else// if in back blue tile by posts
+else// if in back red tile by posts
 {
   addCommand(intake,127);
   addCommand(driveStraight, 2950);
   addCommand(driveStraight, -400);
-  addCommand(turn, -1220);
+  addCommand(turn, -1300);
   addCommand(pause, drive);
+  addCommand(launcher);
   addCommand(end, intake);
   addCommand(turn, 2200);
-  addCommand(driveStraight, -3050);
+  addCommand(driveStraight, -3100);
 }
 }
-else //if on blue side
+else //if on blue side (have button un-clicked)
 {
-  if(getAutoSensor())//   if in front tile by flags
+  if(getAutoSensor())//   if in front blue tile by flags (button is clicked)
   {
     addCommand(driveStraight, 2800);
     addCommand(intake,127);
     addCommand(driveStraight, -2800);
-    addCommand(turn, -900);
+    addCommand(turn, -1340);
     addCommand(pause, drive);
     addCommand(end, intake);
     addCommand(intake, -127);
     addCommand(launcher);
-    addCommand(driveStraight, 3750);
-    addCommand(driveStraight, -800);
-    addCommand(turn, -500);
+    addCommand(turn, -650); //increase I think
     addCommand(end, intake);
     addCommand(intake, -127);
     addCommand(driveStraight, 800);
     addCommand(driveStraight, 800);
     addCommand(driveStraight, 800);
 }
-else// if in back tile by posts
+else// if in back blue tile by posts (button unclicked)
 {
-  addCommand(driveStraight, 2800);
   addCommand(intake,127);
-  addCommand(turn, -600);
+  addCommand(driveStraight, 2950);
+  addCommand(driveStraight, -400);
+  addCommand(turn, 1300);
   addCommand(pause, drive);
+  addCommand(launcher);
   addCommand(end, intake);
-  addCommand(turn, -1250);
-  addCommand(driveStraight, 1200);
+  addCommand(turn, -2200);
+  addCommand(driveStraight, -3100);
+
 }
 }
 }

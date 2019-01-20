@@ -70,7 +70,7 @@ bool isLauncherLoaded()
 
 void moveLift(int speed)
 {
-	setMotor(lift, speed);
+	setMotor(liftMotor, speed);
 }
 
 void moveIntake(int speed)
@@ -216,8 +216,8 @@ void robotFunction(void* param)
 	PIDController gyroPID;
 	PIDController straightGyroPID;
 
-	initializePID(&leftDrivePID, .1, .05, .01, 5, 254, 0, 635);
-	initializePID(&rightDrivePID, .1, .05, .01, 5, 254, 0, 635);
+	initializePID(&leftDrivePID, .12, .05, .01, 5, 254, 0, 635);
+	initializePID(&rightDrivePID, .12, .05, .01, 5, 254, 0, 635);
 	initializePID(&drivePID, .1, 0, 0, 10, 0, 0, 0);
 	initializePID(&gyroPID, .1, .025, .1, 10, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);
@@ -263,6 +263,7 @@ void robotFunction(void* param)
 
 				if(currentTime(&drivePIDTimer) > 300)
 				driveDone = true;
+
 			}
 
 			else if(chassisDirection == gyroDriveStraight)// otherwise if the robot should drive straight with the gyro
@@ -634,7 +635,12 @@ void robotFunction(void* param)
 		//Parse the instructions
 		if((commandReadPos != commandWritePos) && (commandReadPos+1 != commandWritePos))
 		{
-			if(instructions[commandReadPos] == goToStart)
+			if(instructions[commandReadPos] == launcher)
+			{
+				moveLauncher(127);
+				commandReadPos ++;
+			}
+			else if(instructions[commandReadPos] == goToStart)
 			{
 				commandReadPos = 0;
 			}
@@ -706,7 +712,6 @@ void robotFunction(void* param)
 						// {
 						// 	launcherShooting = true;
 						// }
-						commandReadPos++;
 
 					break;
 
