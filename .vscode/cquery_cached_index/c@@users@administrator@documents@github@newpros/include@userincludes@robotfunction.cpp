@@ -23,6 +23,7 @@ int instructions[300];
 int commandReadPos = 0;
 int commandWritePos = 0;
 const int goToStart = -2;
+bool resetRF = false;
 
 void resetRobotFunction()
 {
@@ -34,6 +35,7 @@ void resetRobotFunction()
 		instructions[x] = 0;
 		x++;
 	}
+	resetRF = true;
 }
 
 float getLeftDriveSensor()
@@ -68,7 +70,7 @@ bool isLauncherLoaded()
 
 void moveLift(int speed)
 {
-	setMotor(lift, speed);
+	setMotor(liftMotor, speed);
 }
 
 void moveIntake(int speed)
@@ -78,8 +80,8 @@ void moveIntake(int speed)
 
 void moveDrive(int left, int right, int strafe)
 {
-	pros::lcd::print(3, "get left %d", left);
-	pros::lcd::print(4, "get right %d", right);
+	// pros::lcd::print(3, "get left %d", left);
+	// pros::lcd::print(4, "get right %d", right);
 	setMotor(frontLeftDrive, left + (64 * strafe));
 	setMotor(frontRightDrive, right - (64 * strafe));
 	setMotor(backLeftDrive, left - (64 * strafe));
@@ -158,6 +160,7 @@ timer intakeTimer;
 timer launcherTimer;
 timer pauseTimer;
 timer rfLauncherTimer;
+bool launcherShooting = false;
 
 void robotFunction(void* param)
 {
@@ -201,7 +204,7 @@ void robotFunction(void* param)
 	bool liftDone = true;// the main lift is not done
 	bool intakeDone = true;
 	bool launcherDone = true;
-	bool finished = true;// robotFunction is not finished
+	bool finished = false;// robotFunction is not finished
 
 
 	holdingController liftHolder;
@@ -213,8 +216,8 @@ void robotFunction(void* param)
 	PIDController gyroPID;
 	PIDController straightGyroPID;
 
-	initializePID(&leftDrivePID, .1, .05, .01, 5, 254, 0, 635);
-	initializePID(&rightDrivePID, .1, .05, .01, 5, 254, 0, 635);
+	initializePID(&leftDrivePID, .11, .2, .0, 0, 254, 0, 635);
+	initializePID(&rightDrivePID, .15, .2, .0, 0, 254, 0, 635);
 	initializePID(&drivePID, .1, 0, 0, 10, 0, 0, 0);
 	initializePID(&gyroPID, .1, .025, .1, 10, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);
@@ -260,6 +263,7 @@ void robotFunction(void* param)
 
 				if(currentTime(&drivePIDTimer) > 300)
 				driveDone = true;
+
 			}
 
 			else if(chassisDirection == gyroDriveStraight)// otherwise if the robot should drive straight with the gyro
@@ -334,6 +338,33 @@ void robotFunction(void* param)
 				if(currentTime(&drivePIDTimer) > 300)
 				driveDone = true;
 
+			}
+
+			else if(chassisDirection == turn)
+			{
+				setPIDTarget(&rightDrivePID, -chassisDistance);
+				setPIDTarget(&leftDrivePID, chassisDistance);
+				leftSpeed = calculatePID(&leftDrivePID, getLeftDriveSensor());
+				rightSpeed = calculatePID(&rightDrivePID, getRightDriveSensor());
+
+				if (fabs(getRightDriveSensor()) > fabs(getLeftDriveSensor()))// if the right drive has travelled farther than the left drive
+				{
+					resetPID(&drivePID);
+					setPIDTarget(&drivePID, -getLeftDriveSensor());
+					rightSpeed = rightSpeed + calculatePID(&drivePID, getRightDriveSensor());
+				}
+				else if (fabs(getLeftDriveSensor()) > fabs(getRightDriveSensor()))// if the left drive has travelled farther than the left drive
+				{
+					resetPID(&drivePID);
+					setPIDTarget(&drivePID, -getRightDriveSensor());
+					leftSpeed = leftSpeed + calculatePID(&drivePID, getLeftDriveSensor());
+				}
+
+				if((fabs(getRightDriveSensor() - chassisDistance) <= driveThreshold) || (fabs(getLeftDriveSensor() - chassisDistance) <= driveThreshold))
+				startTimer(&drivePIDTimer);
+
+				if(currentTime(&drivePIDTimer) > 300)
+				driveDone = true;
 			}
 
 			else if(chassisDirection == sweepRight || chassisDirection == forwardRight)
@@ -562,40 +593,40 @@ void robotFunction(void* param)
 			moveIntake(intakeTarget);
 		}
 
-		if(!launcherDone)
-		{
-			if(launcherShooting)
-			{
-				if(!isLauncherLoaded())
-				{
-					launcherDone = true;
-				}
-				else
-				{
-					moveLauncher(127);
-				}
-			}
-			else
-			{
-				if(!isLauncherLoaded())
-				{
-					startTimer(&rfLauncherTimer);
-					if(currentTime(&rfLauncherTimer) > 300)
-					{
-					  moveLauncher(127);
-				  }
-				}
-				else
-				{
-					moveLauncher(0);
-					launcherDone = true;
-				}
-			}
-		}
-		else
-		{
-			moveLauncher(0);
-		}
+		// if(!launcherDone)
+		// {
+		// 	if(launcherShooting)
+		// 	{
+		// 		if(!isLauncherLoaded())
+		// 		{
+		// 			launcherDone = true;
+		// 		}
+		// 		else
+		// 		{
+		// 			moveLauncher(127);
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		if(!isLauncherLoaded())
+		// 		{
+		// 			startTimer(&rfLauncherTimer);
+		// 			if(currentTime(&rfLauncherTimer) > 300)
+		// 			{
+		// 			  moveLauncher(127);
+		// 		  }
+		// 		}
+		// 		else
+		// 		{
+		// 			moveLauncher(0);
+		// 			launcherDone = true;
+		// 		}
+		// 	}
+		// }
+		// else
+		// {
+		// 	moveLauncher(0);
+		// }
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -604,7 +635,12 @@ void robotFunction(void* param)
 		//Parse the instructions
 		if((commandReadPos != commandWritePos) && (commandReadPos+1 != commandWritePos))
 		{
-			if(instructions[commandReadPos] == goToStart)
+			if(instructions[commandReadPos] == launcher)
+			{
+				moveLauncher(127);
+				commandReadPos ++;
+			}
+			else if(instructions[commandReadPos] == goToStart)
 			{
 				commandReadPos = 0;
 			}
@@ -661,6 +697,24 @@ void robotFunction(void* param)
 			{
 				switch(instructions[commandReadPos])
 				{
+					case launcher:
+						// maxLauncherTime = 0;
+						// launcherDone = false;
+						commandReadPos++;
+						// zeroTimer(&rfLauncherTimer);
+						// stopTimer(&rfLauncherTimer);
+						// if(commandReadPos == reload)
+						// {
+						// 	launcherReloading = true;
+						// 	//launcherShooting = false;
+						// }
+						// if(commandReadPos == shoot)
+						// {
+						// 	launcherShooting = true;
+						// }
+
+					break;
+
 					case lift:
 					if(liftDone)
 					{
@@ -691,6 +745,16 @@ void robotFunction(void* param)
 					}
 					break;
 
+					case intake:
+					if(intakeDone)
+					{
+						intakeDone = false;
+						commandReadPos++;
+						intakeTarget = instructions[commandReadPos];
+						commandReadPos++;
+					}
+					break;
+
 					case setLift:
 					if(liftDone)
 					{
@@ -705,38 +769,6 @@ void robotFunction(void* param)
 						liftPosition = instructions[commandReadPos];
 						commandReadPos++;
 					}
-					break;
-
-					case launcher:
-
-					if(launcherDone)
-					{
-						zeroTimer(&launcherTimer);
-						zeroTimer(&rfLauncherTimer);
-						stopTimer(&rfLauncherTimer);
-						maxLauncherTime = 0;
-						launcherShooting = false;
-						commandReadPos++;
-						if(commandReadPos == reload)
-						{
-							if(isLauncherLoaded())
-							{
-								launcherDone = true;
-							}
-							else
-							{
-								launcherDone = false;
-							}
-						}
-
-						else if(commandReadPos == shoot)
-						{
-							launcherDone = false;
-							launcherShooting = true;
-						}
-						commandReadPos++;
-					}
-
 					break;
 
 					case pause:
@@ -859,6 +891,8 @@ void robotFunction(void* param)
 
 		if(driveDone && liftDone && intakeDone && launcher)// if all the subsystems are done
 		finished = true;
+
+		launcherShooting = finished;
 
 		pros::c::task_delay_until(&lastRun, 10);
 		lastRun = pros::c::millis();
