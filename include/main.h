@@ -36,6 +36,8 @@
 
 #include "api.h"
 
+#include "pros/apix.h"
+
 /**
  * You should add more #includes here
  */

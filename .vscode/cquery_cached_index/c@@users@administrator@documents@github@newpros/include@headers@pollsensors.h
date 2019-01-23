@@ -20,6 +20,8 @@ void resetLeftDriveSensor();
 void resetRightDriveSensor();
 void resetStrafeDriveSensor();
 bool getLauncherSensor();
+bool getAutoSensor();
+bool getSideSensor();
 
 
 extern const int SensorRefreshRate;

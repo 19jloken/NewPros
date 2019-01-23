@@ -9,21 +9,23 @@ bool leftButtonPressed = false;
 bool centerButtonPressed = false;
 bool rightButtonPressed = false;
 
+// https://docs.littlevgl.com/
+
 void autonomousSelection()
 {
   if(autonomousSelected)
   {
-  pros::lcd::print(0, "Autonomous %d selected", autonomousMode);
-    pros::lcd::set_text(1, "Center Btn to deselect");
-    pros::lcd::register_btn1_cb(unselectAutonomous);
+  // pros::lcd::print(0, "Autonomous %d selected", autonomousMode);
+  //   pros::lcd::set_text(1, "Center Btn to deselect");
+  //   pros::lcd::register_btn1_cb(unselectAutonomous);
   }
   else
   {
-    pros::lcd::print(0, "Autonomous %d", autonomousMode);
-    pros::lcd::set_text(1, "Center Btn to select");
-    pros::lcd::register_btn0_cb(decreaseAutonomousMode);
-    pros::lcd::register_btn1_cb(selectAutonomous);
-    pros::lcd::register_btn2_cb(increaseAutonomousMode);
+    // pros::lcd::print(0, "Autonomous %d", autonomousMode);
+    // pros::lcd::set_text(1, "Center Btn to select");
+    // pros::lcd::register_btn0_cb(decreaseAutonomousMode);
+    // pros::lcd::register_btn1_cb(selectAutonomous);
+    // pros::lcd::register_btn2_cb(increaseAutonomousMode);
   }
 }
 

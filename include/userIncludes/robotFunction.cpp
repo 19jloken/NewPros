@@ -80,8 +80,8 @@ void moveIntake(int speed)
 
 void moveDrive(int left, int right, int strafe)
 {
-	pros::lcd::print(3, "get left %d", left);
-	pros::lcd::print(4, "get right %d", right);
+	// pros::lcd::print(3, "get left %d", left);
+	// pros::lcd::print(4, "get right %d", right);
 	setMotor(frontLeftDrive, left + (64 * strafe));
 	setMotor(frontRightDrive, right - (64 * strafe));
 	setMotor(backLeftDrive, left - (64 * strafe));
@@ -216,8 +216,8 @@ void robotFunction(void* param)
 	PIDController gyroPID;
 	PIDController straightGyroPID;
 
-	initializePID(&leftDrivePID, .12, .05, .01, 5, 254, 0, 635);
-	initializePID(&rightDrivePID, .12, .05, .01, 5, 254, 0, 635);
+	initializePID(&leftDrivePID, .11, .2, .0, 0, 254, 0, 635);
+	initializePID(&rightDrivePID, .15, .2, .0, 0, 254, 0, 635);
 	initializePID(&drivePID, .1, 0, 0, 10, 0, 0, 0);
 	initializePID(&gyroPID, .1, .025, .1, 10, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);

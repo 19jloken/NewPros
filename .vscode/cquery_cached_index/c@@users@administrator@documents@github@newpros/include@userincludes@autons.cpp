@@ -3,18 +3,76 @@
 
 #include "headers/autons.h"
 #include "headers/robotFunction.h"
+#include "headers/pollSensors.h"
 
 // //autonomous routines
 void autonomous1 ()
 {
-  // addCommand(gyroDriveStraight, 0, 2500);
-  // addCommand(gyroTurn, 900);
-  // addCommand(gyroDriveStraight, 900, 500);
-  // addCommand(gyroTurn, 1800);
-  // addCommand(gyroDriveStraight, 1800, 500);
-  // addCommand(gyroTurn, 2700);
-  // addCommand(gyroDriveStraight, 2700, 500);
-  // addCommand(gyroTurn, 3600);
+if (getSideSensor()) //if on red side
+{
+  if(getAutoSensor())//  if in front red  tile by flags
+  {
+  addCommand(driveStraight, 2800);
+  addCommand(intake,127);
+  addCommand(driveStraight, -2800);
+  addCommand(turn, -1340);
+  addCommand(pause, drive);
+  addCommand(end, intake);
+  addCommand(intake, -127);
+  addCommand(launcher);
+  addCommand(turn, 650); //increase I think
+  addCommand(end, intake);
+  addCommand(intake, -127);
+  addCommand(driveStraight, 800);
+  addCommand(driveStraight, 800);
+  addCommand(driveStraight, 800);
+}
+else// if in back red tile by posts
+{
+  addCommand(intake,127);
+  addCommand(driveStraight, 2950);
+  addCommand(driveStraight, -400);
+  addCommand(turn, -1300);
+  addCommand(pause, drive);
+  addCommand(launcher);
+  addCommand(end, intake);
+  addCommand(turn, 2200);
+  addCommand(driveStraight, -3100);
+}
+}
+else //if on blue side (have button un-clicked)
+{
+  if(getAutoSensor())//   if in front blue tile by flags (button is clicked)
+  {
+    addCommand(driveStraight, 2800);
+    addCommand(intake,127);
+    addCommand(driveStraight, -2800);
+    addCommand(turn, -1340);
+    addCommand(pause, drive);
+    addCommand(end, intake);
+    addCommand(intake, -127);
+    addCommand(launcher);
+    addCommand(turn, -650); //increase I think
+    addCommand(end, intake);
+    addCommand(intake, -127);
+    addCommand(driveStraight, 800);
+    addCommand(driveStraight, 800);
+    addCommand(driveStraight, 800);
+}
+else// if in back blue tile by posts (button unclicked)
+{
+  addCommand(intake,127);
+  addCommand(driveStraight, 2950);
+  addCommand(driveStraight, -400);
+  addCommand(turn, 1300);
+  addCommand(pause, drive);
+  addCommand(launcher);
+  addCommand(end, intake);
+  addCommand(turn, -2200);
+  addCommand(driveStraight, -3100);
+
+}
+}
 }
 void autonomous2 ()
 {

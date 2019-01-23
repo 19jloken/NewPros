@@ -27,6 +27,7 @@ enum Commands
   driveStraight,
   gyroDriveStraight,
   gyroTurn,
+  turn,
 
   PIDDriveCommandMaxValue,
 
@@ -105,6 +106,8 @@ extern int instructions[300];
 extern int commandReadPos;
 extern int commandWritePos;
 extern const int goToStart;
+extern bool resetRF;
+extern bool launcherShooting;
 
 void moveLift(int a);
 void moveIntake(int a);

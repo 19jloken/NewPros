@@ -31,10 +31,10 @@ void initialize()
 {
   // userAutonomousTask.suspend();
   robotFunctionTask.suspend();
-	pros::lcd::initialize();
-  pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
+	// pros::lcd::initialize();
+  // pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
   pros::delay(1000);
-  pros::lcd::set_text(2, "Calibrating");
+  // pros::lcd::set_text(2, "Calibrating");
   pros::c::adi_analog_calibrate(5);
 
   motorArray[0]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -86,7 +86,7 @@ void initialize()
  */
  void disabled()
  {
-   pros::lcd::set_text(1, "Hello PROS User!d");
+   // pros::lcd::set_text(1, "Hello PROS User!d");
  }
 
 /**
@@ -100,6 +100,6 @@ void initialize()
  */
 void competition_initialize()
 {
-  pros::lcd::set_text(1, "Hello PROS User!ci");
+  // pros::lcd::set_text(1, "Hello PROS User!ci");
 	autonomousSelection();
 }

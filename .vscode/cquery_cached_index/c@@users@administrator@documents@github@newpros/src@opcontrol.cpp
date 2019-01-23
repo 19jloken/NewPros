@@ -48,20 +48,20 @@ void opcontrol()
   zeroTimer(&opLauncherTimer);
   stopTimer(&opLauncherTimer);
   uint32_t lastRun = pros::c::millis();
-  pros::lcd::set_text(1, "Hello PROS User!u");
+  // pros::lcd::set_text(1, "Hello PROS User!u");
 
   while(true)// infinite while loop
   {
-    pros::lcd::set_text(1, "Hello PROS User");
+    // pros::lcd::set_text(1, "Hello PROS User");
     if (partner.is_connected())// if their are two controllers
     {
-      pros::lcd::set_text(1, "Two Controller Drive");
+      // pros::lcd::set_text(1, "Two Controller Drive");
       doubleControllerDrive();// use the two controller drive code
     }
     else// if there is one controller
     {
-      pros::lcd::set_text(0, "Single Controller Drive");
-      pros::lcd::print(2, "raw cali %d", pros::c::adi_analog_read_calibrated_HR(5));
+      // pros::lcd::set_text(0, "Single Controller Drive");
+      // pros::lcd::print(2, "raw cali %d", pros::c::adi_analog_read_calibrated_HR(5));
       singleControllerDrive();// use the one controller drive code
     }
     pros::c::task_delay_until(&lastRun, 5);
