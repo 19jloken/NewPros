@@ -139,6 +139,19 @@ void doubleControllerDrive()
     moveIntake(0);
   }
 
+  if(partner.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+  {
+    moveFlipper(127);
+  }
+  else if(partner.get_digital(E_CONTROLLER_DIGITAL_L2))
+  {
+    moveFlipper(-127);
+  }
+  else
+  {
+    moveFlipper(0);
+  }
+
 
   if(isLauncherLoaded() || (fabs(firstLoadedPostion - motorArray[6]->get_position()) < 150 && launcherWasLoaded))
   {

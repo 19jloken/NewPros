@@ -78,6 +78,11 @@ void moveIntake(int speed)
 	setMotor(intakeMotor, speed);
 }
 
+void moveFlipper(int speed)
+{
+	setMotor(flipperMotor, speed);
+}
+
 void moveDrive(int left, int right, int strafe)
 {
 	// pros::lcd::print(3, "get left %d", left);
@@ -593,6 +598,8 @@ void robotFunction(void* param)
 			moveIntake(intakeTarget);
 		}
 
+
+
 		// if(!launcherDone)
 		// {
 		// 	if(launcherShooting)
@@ -769,6 +776,9 @@ void robotFunction(void* param)
 						liftPosition = instructions[commandReadPos];
 						commandReadPos++;
 					}
+
+					break;
+
 					break;
 
 					case pause:
@@ -814,6 +824,7 @@ void robotFunction(void* param)
 							if(launcherDone)
 							commandReadPos+=2;
 							break;
+
 						}
 					}
 					break;
