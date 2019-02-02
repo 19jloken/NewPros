@@ -60,6 +60,7 @@ enum Commands
   strafe,
 
   launcher,
+  launcherStop,
   reload,
   shoot
 };
@@ -105,6 +106,7 @@ enum Commands
 // extern const int out;
 
 extern int instructions[300];
+extern int acceleration[500];
 extern int commandReadPos;
 extern int commandWritePos;
 extern const int goToStart;

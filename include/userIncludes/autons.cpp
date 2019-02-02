@@ -12,20 +12,21 @@ if (getSideSensor()) //if on red side
 {
   if(getAutoSensor())//  if in front red  tile by flags
   {
-  addCommand(driveStraight, 2800);
-  addCommand(intake,127);
-  addCommand(driveStraight, -2800);
-  addCommand(turn, -1340);
-  addCommand(pause, drive);
-  addCommand(end, intake);
-  addCommand(intake, -127);
-  addCommand(launcher);
-  addCommand(turn, 650); //increase I think
-  addCommand(end, intake);
-  addCommand(intake, -127);
-  addCommand(driveStraight, 800);
-  addCommand(driveStraight, 800);
-  addCommand(driveStraight, 800);
+    addCommand(launcher);
+  // addCommand(driveStraight, 2800);
+  // addCommand(intake,127);
+  // addCommand(driveStraight, -2800);
+  // addCommand(turn, -1340);
+  // addCommand(pause, drive);
+  // addCommand(end, intake);
+  // addCommand(intake, -127);
+  // addCommand(launcher);
+  // addCommand(turn, 650); //increase I think
+  // addCommand(end, intake);
+  // addCommand(intake, -127);
+  // addCommand(driveStraight, 800);
+  // addCommand(driveStraight, 800);
+  // addCommand(driveStraight, 800);
 }
 else// if in back red tile by posts
 {

@@ -76,6 +76,13 @@ void initialize()
   motorArray[backRightDrive]->set_reversed(true);
   motorArray[shooter]->set_reversed(true);
   motorArray[intakeMotor]->set_reversed(true);
+
+  int x = 0;
+  while(x < 500)
+  {
+    acceleration[x] = ((x+1)*127)/500;
+    x++;
+  }
   pros::delay(2000);
 }
 
