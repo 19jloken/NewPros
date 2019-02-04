@@ -12,33 +12,35 @@ if (getSideSensor()) //if on red side
 {
   if(getAutoSensor())//  if in front red  tile by flags
   {
-    addCommand(launcher);
-  // addCommand(driveStraight, 2800);
-  // addCommand(intake,127);
-  // addCommand(driveStraight, -2800);
-  // addCommand(turn, -1340);
-  // addCommand(pause, drive);
-  // addCommand(end, intake);
-  // addCommand(intake, -127);
-  // addCommand(launcher);
-  // addCommand(turn, 650); //increase I think
-  // addCommand(end, intake);
-  // addCommand(intake, -127);
-  // addCommand(driveStraight, 800);
-  // addCommand(driveStraight, 800);
-  // addCommand(driveStraight, 800);
-}
-else// if in back red tile by posts
-{
-  addCommand(intake,127);
-  addCommand(driveStraight, 2950);
-  addCommand(driveStraight, -400);
+  addCommand(driveStraight, 2750,intake,127);
+  addCommand(driveStraight, -2750);
   addCommand(turn, -1300);
   addCommand(pause, drive);
   addCommand(launcher);
   addCommand(end, intake);
-  addCommand(turn, 2200);
-  addCommand(driveStraight, -3100);
+  addCommand(turn,-100);
+  addCommand(driveStraight,1500);
+  addCommand(driveStraight,-1500);
+  addCommand(intake, -127);
+  addCommand(launcher);
+  addCommand(turn, 650);
+  addCommand(driveStraight, 800);
+  addCommand(driveStraight, 800);
+  addCommand(driveStraight, 800);
+}
+else// if in back red tile by posts
+{
+  addCommand(driveStraight, 3000);
+  addCommand(turn, -1300);
+  addCommand(pause, drive);
+  addCommand(driveStraight, -1000);
+  addCommand(pause, drive, setLift, 80);
+  addCommand(driveStraight, -500);
+  addCommand(pause, drive);
+  addCommand(launcher);
+  addCommand(driveStraight, 500);
+  addCommand(turn, 400);
+  addCommand(driveStraight, -800);
 }
 }
 else //if on blue side (have button un-clicked)
@@ -53,7 +55,7 @@ else //if on blue side (have button un-clicked)
     addCommand(end, intake);
     addCommand(intake, -127);
     addCommand(launcher);
-    addCommand(turn, -650); //increase I think
+    addCommand(turn, -650);
     addCommand(end, intake);
     addCommand(intake, -127);
     addCommand(driveStraight, 800);
