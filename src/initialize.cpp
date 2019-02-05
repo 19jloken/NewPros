@@ -83,6 +83,7 @@ void initialize()
     acceleration[x] = ((x+1)*127)/500;
     x++;
   }
+  pros::c::delay(500);
 }
 
 /**

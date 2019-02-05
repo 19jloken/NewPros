@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "pros/apix.h"
 
  #include "headers/lcdCode.h"
  #include "headers/motorSlew.h"
@@ -33,9 +34,8 @@ void initialize()
   robotFunctionTask.suspend();
 	// pros::lcd::initialize();
   // pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
-  pros::delay(1000);
   // pros::lcd::set_text(2, "Calibrating");
-  pros::c::adi_analog_calibrate(5);
+  // pros::c::adi_analog_calibrate(5);
 
   motorArray[0]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[1]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -83,7 +83,7 @@ void initialize()
     acceleration[x] = ((x+1)*127)/500;
     x++;
   }
-  pros::delay(2000);
+  pros::c::delay(500);
 }
 
 /**
