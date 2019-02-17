@@ -13,6 +13,7 @@ float getStrafeMotorSensor();
 float getGyroSensor();
 float getLiftSensor();
 float getIntakeSensor();
+float getFlipperSensor();
 bool getLauncherSensor();
 bool isLauncherLoaded();
 
@@ -47,6 +48,7 @@ enum Commands
   lift,
   bar,
   intake,
+  flipper,
   pause,
   pauseAll,
   maxTime,
@@ -58,6 +60,7 @@ enum Commands
   strafe,
 
   launcher,
+  launcherStop,
   reload,
   shoot
 };
@@ -103,6 +106,7 @@ enum Commands
 // extern const int out;
 
 extern int instructions[300];
+extern int acceleration[500];
 extern int commandReadPos;
 extern int commandWritePos;
 extern const int goToStart;
@@ -111,6 +115,7 @@ extern bool launcherShooting;
 
 void moveLift(int a);
 void moveIntake(int a);
+void moveFlipper(int a);
 void moveDrive(int left, int right, int strafe);
 void moveStrafe(int Speed);
 void moveLauncher(int speed);

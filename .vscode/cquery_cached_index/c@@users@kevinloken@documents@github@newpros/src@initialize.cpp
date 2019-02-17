@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "pros/apix.h"
 
  #include "headers/lcdCode.h"
  #include "headers/motorSlew.h"
@@ -31,11 +32,10 @@ void initialize()
 {
   // userAutonomousTask.suspend();
   robotFunctionTask.suspend();
-	pros::lcd::initialize();
-  pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
-  pros::delay(1000);
-  pros::lcd::set_text(2, "Calibrating");
-  pros::c::adi_analog_calibrate(5);
+	// pros::lcd::initialize();
+  // pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
+  // pros::lcd::set_text(2, "Calibrating");
+  // pros::c::adi_analog_calibrate(5);
 
   motorArray[0]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[1]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -76,7 +76,14 @@ void initialize()
   motorArray[backRightDrive]->set_reversed(true);
   motorArray[shooter]->set_reversed(true);
   motorArray[intakeMotor]->set_reversed(true);
-  pros::delay(2000);
+
+  int x = 0;
+  while(x < 500)
+  {
+    acceleration[x] = ((x+1)*127)/500;
+    x++;
+  }
+  pros::c::delay(500);
 }
 
 /**
@@ -86,7 +93,7 @@ void initialize()
  */
  void disabled()
  {
-   pros::lcd::set_text(1, "Hello PROS User!d");
+   // pros::lcd::set_text(1, "Hello PROS User!d");
  }
 
 /**
@@ -100,6 +107,6 @@ void initialize()
  */
 void competition_initialize()
 {
-  pros::lcd::set_text(1, "Hello PROS User!ci");
+  // pros::lcd::set_text(1, "Hello PROS User!ci");
 	autonomousSelection();
 }

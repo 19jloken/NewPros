@@ -8,71 +8,87 @@
 // //autonomous routines
 void autonomous1 ()
 {
-if (getSideSensor()) //if on red side
-{
-  if(getAutoSensor())//  if in front red  tile by flags
-  {
-  addCommand(driveStraight, 2800);
-  addCommand(intake,127);
+  //Front red
+  addCommand(driveStraight, 3000,intake, 127);
   addCommand(driveStraight, -2800);
-  addCommand(turn, -1340);
-  addCommand(pause, drive);
-  addCommand(end, intake);
-  addCommand(intake, -127);
-  addCommand(launcher);
-  addCommand(turn, 650); //increase I think
-  addCommand(end, intake);
-  addCommand(intake, -127);
-  addCommand(driveStraight, 800);
-  addCommand(driveStraight, 800);
-  addCommand(driveStraight, 800);
-}
-else// if in back red tile by posts
-{
-  addCommand(intake,127);
-  addCommand(driveStraight, 2950);
-  addCommand(driveStraight, -400);
   addCommand(turn, -1300);
+  addCommand(driveStraight, 150);
   addCommand(pause, drive);
   addCommand(launcher);
-  addCommand(end, intake);
-  addCommand(turn, 2200);
-  addCommand(driveStraight, -3100);
-}
-}
-else //if on blue side (have button un-clicked)
-{
-  if(getAutoSensor())//   if in front blue tile by flags (button is clicked)
-  {
-    addCommand(driveStraight, 2800);
-    addCommand(intake,127);
-    addCommand(driveStraight, -2800);
-    addCommand(turn, -1340);
-    addCommand(pause, drive);
-    addCommand(end, intake);
-    addCommand(intake, -127);
-    addCommand(launcher);
-    addCommand(turn, -650); //increase I think
-    addCommand(end, intake);
-    addCommand(intake, -127);
-    addCommand(driveStraight, 800);
-    addCommand(driveStraight, 800);
-    addCommand(driveStraight, 800);
-}
-else// if in back blue tile by posts (button unclicked)
-{
-  addCommand(intake,127);
-  addCommand(driveStraight, 2950);
-  addCommand(driveStraight, -400);
-  addCommand(turn, 1300);
-  addCommand(pause, drive);
-  addCommand(launcher);
-  addCommand(end, intake);
-  addCommand(turn, -2200);
-  addCommand(driveStraight, -3100);
+  addCommand(end, intake,turn, -250);
+  addCommand(driveStraight, 3400);
+  addCommand(driveStraight, -1550);
+  addCommand(turn, 1350,intake, -127);
+  addCommand(driveStraight, 900);
+  addCommand(driveStraight, 900);
+  addCommand(driveStraight, 900);
 
-}
-}
+  //Back Red
+  // addCommand(driveStraight, 3000,intake, 127);
+  // addCommand(driveStraight, -900);
+  // addCommand(end, intake);
+  // addCommand(turn, -1200);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(turn, 1200);
+  // addCommand(driveStraight, 600);
+  // addCommand(turn, 1300);
+  // addCommand(driveStraight, -2500);
+  //
+  // //Front Blue
+  // addCommand(driveStraight, 3000,intake, 127);
+  // addCommand(driveStraight, -2800);
+  // addCommand(turn, 1300);
+  // addCommand(driveStraight, 150);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(end, intake,turn, 250);
+  // addCommand(driveStraight, 3200);
+  // addCommand(driveStraight, -1400);
+  // addCommand(turn, -1300,intake, -127);
+  // addCommand(driveStraight, 900);
+  // addCommand(driveStraight, 900);
+  // addCommand(driveStraight, 900);
+  //
+  // //Back Blue
+  // addCommand(driveStraight, 3000,intake, 127);
+  // addCommand(driveStraight, -900);
+  // addCommand(end, intake);
+  // addCommand(turn, 1100);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(turn, -1100);
+  // addCommand(driveStraight, 600);
+  // addCommand(turn, -1300);
+  // addCommand(driveStraight, -2600);
+  //
+  // addCommand(intake, 127);
+  // addCommand(driveStraight, 3000);
+  // addCommand(pause, drive);
+  // addCommand(end, intake);
+  // addCommand(intake, -127, driveStraight,1200);
+  // addCommand(driveStraight, -4000);
+  // addCommand(turn, -1335);
+  // addCommand(driveStraight, 3750);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(end, intake,turn, -250);
+  // addCommand(driveStraight, 3600);
+  // addCommand(driveStraight, -3600);
+  // addCommand(turn, 1300,intake, 127);
+  // addCommand(driveStraight, 3000);
+  // addCommand(pause,drive);
+  // addCommand(end, intake);
+  // addCommand(intake, -127, driveStraight,900);
+  // addCommand(driveStraight, -100);
+  // addCommand(turn,-1300);
+  // addCommand(launcher);
+  // addCommand(turn,1300);
+  // addCommand(driveStraight,-1500);
+  // addCommand(turn,-1300);
+  // addCommand(driveStraight,-2500);
+
+
 }
 void autonomous2 ()
 {

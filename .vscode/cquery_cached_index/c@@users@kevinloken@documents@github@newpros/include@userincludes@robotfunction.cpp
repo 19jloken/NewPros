@@ -20,6 +20,7 @@ pros::Task robotFunctionTask(robotFunction, (void*)"PROS", TASK_PRIORITY_DEFAULT
 
 
 int instructions[300];
+int acceleration[500];
 int commandReadPos = 0;
 int commandWritePos = 0;
 const int goToStart = -2;
@@ -78,10 +79,15 @@ void moveIntake(int speed)
 	setMotor(intakeMotor, speed);
 }
 
+void moveFlipper(int speed)
+{
+	setMotor(flipperMotor, speed);
+}
+
 void moveDrive(int left, int right, int strafe)
 {
-	pros::lcd::print(3, "get left %d", left);
-	pros::lcd::print(4, "get right %d", right);
+	// pros::lcd::print(3, "get left %d", left);
+	// pros::lcd::print(4, "get right %d", right);
 	setMotor(frontLeftDrive, left + (64 * strafe));
 	setMotor(frontRightDrive, right - (64 * strafe));
 	setMotor(backLeftDrive, left - (64 * strafe));
@@ -160,6 +166,7 @@ timer intakeTimer;
 timer launcherTimer;
 timer pauseTimer;
 timer rfLauncherTimer;
+timer accelerationTimer;
 bool launcherShooting = false;
 
 void robotFunction(void* param)
@@ -216,9 +223,9 @@ void robotFunction(void* param)
 	PIDController gyroPID;
 	PIDController straightGyroPID;
 
-	initializePID(&leftDrivePID, .12, .05, .01, 5, 254, 0, 635);
-	initializePID(&rightDrivePID, .12, .05, .01, 5, 254, 0, 635);
-	initializePID(&drivePID, .1, 0, 0, 10, 0, 0, 0);
+	initializePID(&leftDrivePID, .11, .2, .0, 0, 254, 0, 635);
+	initializePID(&rightDrivePID, .11, .2, .0, 0, 254, 0, 635);
+	initializePID(&drivePID, .13, .1, .001, 0, 400, 0, 635);
 	initializePID(&gyroPID, .1, .025, .1, 10, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);
 	initializePID(&straightGyroPID, .0025, .00, .0, 0, 1000, 0, 500);
@@ -233,6 +240,7 @@ void robotFunction(void* param)
 	initializeTimer(&pauseTimer);
 	initializeTimer(&launcherTimer);
 	initializeTimer(&rfLauncherTimer);
+	initializeTimer(&accelerationTimer);
 
 	while(true)
 	{
@@ -242,21 +250,40 @@ void robotFunction(void* param)
 			{
 				setPIDTarget(&rightDrivePID, chassisDistance);
 				setPIDTarget(&leftDrivePID, chassisDistance);
-				leftSpeed = calculatePID(&leftDrivePID, getLeftDriveSensor());
-				rightSpeed = calculatePID(&rightDrivePID, getRightDriveSensor());
+				if ((currentTime(&accelerationTimer) < 500) && ((fabs(getRightDriveSensor() - chassisDistance) >= driveThreshold) || (fabs(getLeftDriveSensor() - chassisDistance) >= driveThreshold)))
+				{
+					if (abs(acceleration[currentTime(&accelerationTimer)]) < fabs(calculatePID(&leftDrivePID, getLeftDriveSensor())))
+					leftSpeed = acceleration[currentTime(&accelerationTimer)] * sgn(calculatePID(&leftDrivePID, getLeftDriveSensor()));
+					else
+					leftSpeed = calculatePID(&leftDrivePID, getLeftDriveSensor());
+					if (abs(acceleration[currentTime(&accelerationTimer)]) < fabs(calculatePID(&rightDrivePID, getRightDriveSensor())))
+					rightSpeed = acceleration[currentTime(&accelerationTimer)] * sgn(calculatePID(&rightDrivePID, getRightDriveSensor()));
+					else
+					rightSpeed = calculatePID(&rightDrivePID, getRightDriveSensor());
+				}
+				else
+				{
+					leftSpeed = calculatePID(&leftDrivePID, getLeftDriveSensor());
+					rightSpeed = calculatePID(&rightDrivePID, getRightDriveSensor());
+				}
 
-				if (fabs(getRightDriveSensor()) > fabs(getLeftDriveSensor()))// if the right drive has travelled farther than the left drive
+				if(fabs(getRightDriveSensor()) - fabs(getLeftDriveSensor()) > 200)
 				{
-					resetPID(&drivePID);
-					setPIDTarget(&drivePID, getLeftDriveSensor());
-					rightSpeed = rightSpeed - fabs(calculatePID(&drivePID, getRightDriveSensor()));
+
+					if (fabs(getRightDriveSensor()) > fabs(getLeftDriveSensor()))// if the right drive has travelled farther than the left drive
+					{
+						resetPID(&drivePID);
+						setPIDTarget(&drivePID, getLeftDriveSensor());
+						rightSpeed = rightSpeed - fabs(calculatePID(&drivePID, getRightDriveSensor()));
+					}
+					else if (fabs(getLeftDriveSensor()) > fabs(getRightDriveSensor()))// if the left drive has travelled farther than the left drive
+					{
+						resetPID(&drivePID);
+						setPIDTarget(&drivePID, getRightDriveSensor());
+						leftSpeed = leftSpeed - fabs(calculatePID(&drivePID, getLeftDriveSensor()));
+					}
 				}
-				else if (fabs(getLeftDriveSensor()) > fabs(getRightDriveSensor()))// if the left drive has travelled farther than the left drive
-				{
-					resetPID(&drivePID);
-					setPIDTarget(&drivePID, getRightDriveSensor());
-					leftSpeed = leftSpeed - fabs(calculatePID(&drivePID, getLeftDriveSensor()));
-				}
+
 
 				if((fabs(getRightDriveSensor() - chassisDistance) <= driveThreshold) || (fabs(getLeftDriveSensor() - chassisDistance) <= driveThreshold))
 				startTimer(&drivePIDTimer);
@@ -593,6 +620,23 @@ void robotFunction(void* param)
 			moveIntake(intakeTarget);
 		}
 
+		if(currentTime(&rfLauncherTimer) < 300)
+		{
+			moveLauncher(127);
+		}
+		else
+		{
+			if(getLauncherSensor())
+			{
+				moveLauncher(0);
+			}
+			else
+			{
+				moveLauncher(127);
+			}
+		}
+
+
 		// if(!launcherDone)
 		// {
 		// 	if(launcherShooting)
@@ -637,9 +681,14 @@ void robotFunction(void* param)
 		{
 			if(instructions[commandReadPos] == launcher)
 			{
-				moveLauncher(127);
+				zeroTimer(&rfLauncherTimer);
 				commandReadPos ++;
 			}
+			// else if(instructions[commandReadPos] == launcherStop)
+			// {
+			// 	moveLauncher(0);
+			// 	commandReadPos ++;
+			// }
 			else if(instructions[commandReadPos] == goToStart)
 			{
 				commandReadPos = 0;
@@ -662,6 +711,8 @@ void robotFunction(void* param)
 					zeroTimer(&driveTimer);
 					stopTimer(&drivePIDTimer);
 					zeroTimer(&drivePIDTimer);
+					zeroTimer(&accelerationTimer);
+					startTimer(&accelerationTimer);
 					maxDriveTime = 0;
 					driveDone = false;
 					heading = getGyroSensor();
@@ -769,6 +820,9 @@ void robotFunction(void* param)
 						liftPosition = instructions[commandReadPos];
 						commandReadPos++;
 					}
+
+					break;
+
 					break;
 
 					case pause:
@@ -814,6 +868,7 @@ void robotFunction(void* param)
 							if(launcherDone)
 							commandReadPos+=2;
 							break;
+
 						}
 					}
 					break;

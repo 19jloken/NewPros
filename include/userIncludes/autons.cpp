@@ -9,58 +9,86 @@
 void autonomous1 ()
 {
   //Front red
-  // addCommand(driveStraight, 2750,intake, 127);
-  // addCommand(turn, -200,driveStraight, -2500);
-  // addCommand(turn, -1250);
-  // addCommand(pause, drive);
-  // addCommand(launcher);
-  // addCommand(end, intake,turn, -100);
-  // addCommand(driveStraight, 3400);
-  // addCommand(driveStraight, -1500);
-  // addCommand(turn, 1350,intake, -127);
-  // addCommand(driveStraight, 900);
-  // addCommand(driveStraight, 900);
-  // addCommand(turn, -1300);
-  // addCommand(driveStraight, -3000,end, intake);
-
-  //Back Red
   addCommand(driveStraight, 3000,intake, 127);
-  addCommand(driveStraight, -900);
-  addCommand(end, intake);
-  addCommand(turn, -1200);
+  addCommand(driveStraight, -2800);
+  addCommand(turn, -1300);
+  addCommand(driveStraight, 150);
   addCommand(pause, drive);
   addCommand(launcher);
-  addCommand(turn, 1200);
-  addCommand(driveStraight, 600);
-  addCommand(turn, 1300);
-  addCommand(driveStraight, -2500);
+  addCommand(end, intake,turn, -250);
+  addCommand(driveStraight, 3400);
+  addCommand(driveStraight, -1550);
+  addCommand(turn, 1350,intake, -127);
+  addCommand(driveStraight, 900);
+  addCommand(driveStraight, 900);
+  addCommand(driveStraight, 900);
+
+  //Back Red
+  // addCommand(driveStraight, 3000,intake, 127);
+  // addCommand(driveStraight, -900);
+  // addCommand(end, intake);
+  // addCommand(turn, -1200);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(turn, 1200);
+  // addCommand(driveStraight, 600);
+  // addCommand(turn, 1300);
+  // addCommand(driveStraight, -2500);
   //
   // //Front Blue
-  //   addCommand(driveStraight, 2750,intake,127);
-  //   addCommand(driveStraight, -2750);
-  //   addCommand(turn, 1370);
-  //   addCommand(pause, drive);
-  //   addCommand(launcher);
-  //   addCommand(end, intake,turn, 100);
-  //   addCommand(driveStraight, 2500);
-  //   addCommand(driveStraight, -1500);
-  //   addCommand(turn, -1300,intake, -127);
-  //   addCommand(driveStraight, 800);
-  //   addCommand(driveStraight, 800);
-  //   addCommand(turn, 1300);
-  //   addCommand(driveStr]aight, -3000,end, intake);
+  // addCommand(driveStraight, 3000,intake, 127);
+  // addCommand(driveStraight, -2800);
+  // addCommand(turn, 1300);
+  // addCommand(driveStraight, 150);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(end, intake,turn, 250);
+  // addCommand(driveStraight, 3200);
+  // addCommand(driveStraight, -1400);
+  // addCommand(turn, -1300,intake, -127);
+  // addCommand(driveStraight, 900);
+  // addCommand(driveStraight, 900);
+  // addCommand(driveStraight, 900);
   //
   // //Back Blue
   // addCommand(driveStraight, 3000,intake, 127);
   // addCommand(driveStraight, -900);
   // addCommand(end, intake);
-  // addCommand(turn, 990);
+  // addCommand(turn, 1100);
   // addCommand(pause, drive);
   // addCommand(launcher);
   // addCommand(turn, -1100);
-  // addCommand(driveStraight, 800);
+  // addCommand(driveStraight, 600);
   // addCommand(turn, -1300);
-  // addCommand(driveStraight, -1000);
+  // addCommand(driveStraight, -2600);
+  //
+  // addCommand(intake, 127);
+  // addCommand(driveStraight, 3000);
+  // addCommand(pause, drive);
+  // addCommand(end, intake);
+  // addCommand(intake, -127, driveStraight,1200);
+  // addCommand(driveStraight, -4000);
+  // addCommand(turn, -1335);
+  // addCommand(driveStraight, 3750);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(end, intake,turn, -250);
+  // addCommand(driveStraight, 3600);
+  // addCommand(driveStraight, -3600);
+  // addCommand(turn, 1300,intake, 127);
+  // addCommand(driveStraight, 3000);
+  // addCommand(pause,drive);
+  // addCommand(end, intake);
+  // addCommand(intake, -127, driveStraight,900);
+  // addCommand(driveStraight, -100);
+  // addCommand(turn,-1300);
+  // addCommand(launcher);
+  // addCommand(turn,1300);
+  // addCommand(driveStraight,-1500);
+  // addCommand(turn,-1300);
+  // addCommand(driveStraight,-2500);
+
+
 }
 void autonomous2 ()
 {
