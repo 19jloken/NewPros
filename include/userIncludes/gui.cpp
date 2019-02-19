@@ -1,7 +1,7 @@
-#ifndef lcdCode_cpp
-#define lcdCode_cpp
+#ifndef gui_cpp
+#define gui_cpp
 
-#include "headers/lcdCode.h"
+#include "headers/gui.h"
 #include "headers/general.h"
 #include "pros/llemu.hpp"
 #include "main.h"
