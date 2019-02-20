@@ -12,13 +12,10 @@
 static lv_obj_t *g_btn_region; //tab view region of the screen
 static lv_obj_t *g_sb_region; //status bar region of the screen
 static lv_obj_t *g_sb_label;  // sb text label
-static lv_obj_t *g_sec_text; // sets the text for the second screen
-
-int auton_sel = 0;
-
-lv_obj_t * scr1 = lv_page_create(NULL, NULL);
-
-lv_obj_t * scr2 = lv_page_create(NULL, NULL);
+static lv_obj_t *homeLabel; // sets the text for the shome button
+lv_obj_t * scr1 = lv_page_create(NULL, NULL); //creates the first screen
+lv_obj_t * scr2 = lv_page_create(NULL, NULL); //creates the second screen
+int auton_sel = 0; //changes when gui buttons are pressed to select auton
 
 static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
 
@@ -28,27 +25,33 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
   case 1:
     lv_label_set_text(g_sb_label, "Red Front Auton");
     auton_sel = 1;
+    lv_scr_load(scr2);
     break;
   case 2:
     lv_label_set_text(g_sb_label, "Red Back Auton");
     auton_sel = 2;
+    lv_scr_load(scr2);
     break;
   case 3:
     lv_label_set_text(g_sb_label, "Blue Front Auton");
     auton_sel = 3;
-break;
+    lv_scr_load(scr2);
+    break;
   case 4:
     lv_label_set_text(g_sb_label, "Blue Back Auton");
     auton_sel = 4;
-break;
+    lv_scr_load(scr2);
+    break;
   case 5:
     lv_label_set_text(g_sb_label, "Skills Auton1");
     auton_sel = 5;
-break;
+    lv_scr_load(scr2);
+    break;
   case 6:
     lv_label_set_text(g_sb_label, "Skills Auton2");
     auton_sel = 6;
-break;
+    lv_scr_load(scr2);
+    break;
   }
 
   lv_obj_align(g_sb_label, NULL, LV_ALIGN_CENTER, 0, 0); // must be after set_text
@@ -56,40 +59,12 @@ break;
   return LV_RES_OK; /*Return OK because the button matrix is not deleted*/
 }
 
-static lv_res_t auton_text(lv_obj_t * btnm, const char *txt) {
+static lv_res_t btn_click_action(lv_obj_t * homeBtn)
+{
+    lv_scr_load(scr1);
 
-  int autonSelected = atoi(txt);
-
-  if (auton_sel == 1)
-  {
-  lv_label_set_text(g_sec_text, "Red Front Auton");
-  }
-  else if (auton_sel == 2)
-  {
-  lv_label_set_text(g_sec_text, "Red Back Auton");
-  }
-  else if (auton_sel == 3)
-  {
-  lv_label_set_text(g_sec_text, "Blue Front Auton");
-  }
-  else if (auton_sel == 4)
-  {
-  lv_label_set_text(g_sec_text, "Blue Back Auton");
-  }
-  else if (auton_sel == 5)
-  {
-  lv_label_set_text(g_sec_text, "Skills Auton1");
-  }
-  else if (auton_sel == 6)
-  {
-  lv_label_set_text(g_sec_text, "Skills Auton2");
-  }
-
-  lv_obj_align(g_sec_text, NULL, LV_ALIGN_IN_RIGHT_MID, 0, 0); // must be after set_text
-  return LV_RES_OK;
+    return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
-
-
 
 // static lv_res_t btn_click_action(lv_obj_t * btn)
 // {
@@ -123,7 +98,7 @@ void firstGui(void)
      * Now a Page is used which is an objects with scrollable content*/
      lv_scr_load(scr1);
 
-     /*Create 2 button styles*/
+     //Creates button_map style
      static lv_style_t style_btn_rel;
      static lv_style_t style_btn_pr;
      lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
@@ -134,22 +109,29 @@ void firstGui(void)
      style_btn_rel.body.border.opa = LV_OPA_50;
      style_btn_rel.body.radius = 0;
 
+     //Creates a label style so we can see text on the dark background
+     static lv_style_t style_txt;
+     lv_style_copy(&style_txt, &lv_style_plain);
+     style_txt.text.letter_space = 2;
+     style_txt.text.line_space = 1;
+     style_txt.text.color = LV_COLOR_WHITE;
+
      g_btn_region = lv_obj_create(lv_scr_act(), NULL);
      lv_obj_set_size(g_btn_region, lv_obj_get_width(lv_scr_act()),
-         lv_obj_get_height(lv_scr_act()) * 0.8);
+         lv_obj_get_height(lv_scr_act()));
      lv_obj_align(g_btn_region, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
      lv_obj_set_style(g_btn_region, &lv_style_plain);
 
      //
-     g_sb_region = lv_obj_create(lv_scr_act(), NULL);
-     lv_obj_set_size(g_sb_region, lv_obj_get_width(lv_scr_act()),
-         lv_obj_get_height(lv_scr_act()) * 0.2);
-     //set_sb_style(g_sb_region);
-     lv_obj_align(g_sb_region, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
-     lv_obj_set_style(g_sb_region, &lv_style_plain);
+     // g_sb_region = lv_obj_create(lv_scr_act(), NULL);
+     // lv_obj_set_size(g_sb_region, lv_obj_get_width(lv_scr_act()),
+     //     lv_obj_get_height(lv_scr_act()) * 0.2);
+     // //set_sb_style(g_sb_region);
+     // lv_obj_align(g_sb_region, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+     // lv_obj_set_style(g_sb_region, &lv_style_plain);
 
-     g_sb_label = lv_label_create(g_sb_region, NULL);
-     lv_obj_set_style(g_sb_label, &lv_style_plain);
+     g_sb_label = lv_label_create(scr2, NULL);
+     lv_obj_set_style(g_sb_label, &style_txt);
      lv_obj_align(g_sb_label, NULL, LV_ALIGN_CENTER, 0, 0);
 
      // Create a button descriptor string array w/ no repeat "\224"
@@ -159,15 +141,22 @@ void firstGui(void)
      // Create a default button matrix* no repeat
      lv_obj_t *btnm = lv_btnm_create(g_btn_region, NULL);
      lv_obj_set_size(btnm, lv_obj_get_width(g_btn_region),
-     lv_obj_get_height(g_btn_region) - 34);
+     lv_obj_get_height(g_btn_region));
      lv_btnm_set_style(btnm, LV_BTNM_STYLE_BG, &style_btn_rel);
 
      lv_btnm_set_map(btnm, btnm_map);
      lv_btnm_set_action(btnm, btnm_action);
 
-     g_sec_text = lv_label_create(scr2, NULL);
-     lv_obj_set_style(g_sec_text, &lv_style_plain);
-     lv_obj_align(g_sec_text, NULL, LV_ALIGN_CENTER, 0, 0);
+     /*Create a normal button*/
+     lv_obj_t * homeBtn = lv_btn_create(scr2, NULL);
+     lv_cont_set_fit(homeBtn, true, true); /*Enable resizing horizontally and vertically*/
+     lv_obj_align(homeBtn, homeLabel, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 10);
+     lv_obj_set_free_num(homeBtn, 1);   /*Set a unique number for the button*/
+     lv_btn_set_action(homeBtn, LV_BTN_ACTION_CLICK, btn_click_action);
+
+     /*Add a label to the button*/
+     homeLabel = lv_label_create(homeBtn, NULL);
+     lv_label_set_text(homeLabel, "Home");
 
     /*Create a new style for the button matrix back ground*/
     // static lv_style_t style_bg;
