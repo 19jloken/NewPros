@@ -141,11 +141,11 @@ void doubleControllerDrive()
 
   if(partner.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
   {
-    moveFlipper(127);
+    moveFlipper(-127);
   }
   else if(partner.get_digital(E_CONTROLLER_DIGITAL_L2))
   {
-    moveFlipper(-127);
+    moveFlipper(127);
   }
   else
   {

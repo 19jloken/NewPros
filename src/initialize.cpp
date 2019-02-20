@@ -32,6 +32,7 @@ void initialize()
 {
   // userAutonomousTask.suspend();
   robotFunctionTask.suspend();
+  gui();
 	// pros::lcd::initialize();
   // pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
   // pros::lcd::set_text(2, "Calibrating");

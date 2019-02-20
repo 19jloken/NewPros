@@ -2,7 +2,7 @@
 #include "main.h"
 #include "pros/apix.h"
 
- #include "headers/lcdCode.h"
+ #include "headers/gui.h"
  #include "headers/motorSlew.h"
  #include "headers/opcontrol.h"
 
@@ -10,7 +10,7 @@
 #include "userIncludes/filters.cpp"
 #include "userIncludes/general.cpp"
 #include "userIncludes/gyroFunctions.cpp"
-#include "userIncludes/lcdCode.cpp"
+#include "userIncludes/gui.cpp"
 #include "userIncludes/liftController.cpp"
 #include "userIncludes/mathFunctions.cpp"
 #include "userIncludes/motorSlew.cpp"
@@ -32,6 +32,7 @@ void initialize()
 {
   // userAutonomousTask.suspend();
   robotFunctionTask.suspend();
+  gui();
 	// pros::lcd::initialize();
   // pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
   // pros::lcd::set_text(2, "Calibrating");
