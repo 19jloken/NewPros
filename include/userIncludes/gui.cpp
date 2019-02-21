@@ -6,7 +6,6 @@
 #include "pros/llemu.hpp"
 #include "main.h"
 #include <stdio.h>
-#include <errno.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
@@ -58,7 +57,7 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
     break;
   }
 
-  lv_obj_align(g_sb_label, NULL, LV_ALIGN_CENTER, 0, 0); // must be after set_text
+  lv_obj_set_pos(g_sb_label, 150, 200); // must be after set_text
 
   return LV_RES_OK; /*Return OK because the button matrix is not deleted*/
 }
@@ -74,17 +73,77 @@ static lv_res_t btn_click_action(lv_obj_t * autonBtn)
 static lv_res_t left(lv_obj_t * rightButton)
 {
 
+  if (auton_sel = 6)
+  {
+    auton_sel = 1;
+  }
+  else
+  {
+    auton_sel++;
+  }
 
+  switch (auton_sel) {
+  case 1:
+    lv_label_set_text(g_sb_label, "Red Front Auton");
+    break;
+  case 2:
+    lv_label_set_text(g_sb_label, "Red Back Auton");
+    break;
+  case 3:
+    lv_label_set_text(g_sb_label, "Blue Front Auton");
+    break;
+  case 4:
+    lv_label_set_text(g_sb_label, "Blue Back Auton");
+    break;
+  case 5:
+    lv_label_set_text(g_sb_label, "Skills Auton1");
+    break;
+  case 6:
+    lv_label_set_text(g_sb_label, "Skills Auton2");
+    break;
+  }
 
-    return LV_RES_OK; /*Return OK if the button is not deleted*/
+  lv_obj_set_pos(rightButton, 305, 200);
+
+  return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
 static lv_res_t right(lv_obj_t * leftButton)
 {
 
+  if (auton_sel = 1)
+  {
+    auton_sel = 6;
+  }
+  else
+  {
+    auton_sel--;
+  }
 
+  switch (auton_sel) {
+  case 1:
+    lv_label_set_text(g_sb_label, "Red Front Auton");
+    break;
+  case 2:
+    lv_label_set_text(g_sb_label, "Red Back Auton");
+    break;
+  case 3:
+    lv_label_set_text(g_sb_label, "Blue Front Auton");
+    break;
+  case 4:
+    lv_label_set_text(g_sb_label, "Blue Back Auton");
+    break;
+  case 5:
+    lv_label_set_text(g_sb_label, "Skills Auton1");
+    break;
+  case 6:
+    lv_label_set_text(g_sb_label, "Skills Auton2");
+    break;
+  }
 
-    return LV_RES_OK; /*Return OK if the button is not deleted*/
+  lv_obj_set_pos(leftButton, 95, 200);
+
+  return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
 
