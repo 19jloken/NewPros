@@ -3,7 +3,7 @@
 #include "headers/robotFunction.h"
 #include "headers/general.h"
 #include "headers/pollSensors.h"
-#include "headers/lcdCode.h"
+#include "headers/gui.h"
 #include "headers/opcontrol.h"
 /**
 * Runs the user autonomous code. This function will be started in its own task
@@ -32,26 +32,27 @@ void autonomous()
   //   autonomousSelection();
   //   pros::delay(10);
   // }
-  switch(autonomousMode)// switch to determine which auton to run
+  switch(auton_sel)// switch to determine which auton to run
   {
+
     case 1:
     autonomous1();
     break;
-  //   case 2:
-  //   autonomous2();
-  //   break;
-  //   case 3:
-  //   autonomous3();
-  //   break;
-  //   case 4:
-  //   autonomous4();
-  //   break;
-  //   case 5:
-  //   autonomous5();
-  //   break;
-  //   case 6:
-  //   autonomous6();
-  //   break;
+    case 2:
+    autonomous2();
+    break;
+    case 3:
+    autonomous3();
+    break;
+    case 4:
+    autonomous4();
+    break;
+    case 5:
+    autonomous5();
+    break;
+    case 6:
+    autonomous6();
+    break;
   //   case 7:
   //   autonomous7();
   //   break;
