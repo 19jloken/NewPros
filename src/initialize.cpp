@@ -109,5 +109,4 @@ void initialize()
 void competition_initialize()
 {
   // pros::lcd::set_text(1, "Hello PROS User!ci");
-	autonomousSelection();
 }
