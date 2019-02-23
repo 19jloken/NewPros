@@ -28,11 +28,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/autonomous.cpp.o",
-            "src\\autonomous.cpp"
+            "C:/Users/jjlok/AppData/Local/Temp/tmptmjd_uth/opcontrol.cpp.o",
+            "src\\opcontrol.cpp"
         ],
         "directory": "C:\\Users\\jjlok\\OneDrive\\Documents\\GitHub\\NewPros",
-        "file": "src\\autonomous.cpp"
+        "file": "src\\opcontrol.cpp"
     },
     {
         "arguments": [
@@ -63,7 +63,7 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/initialize.cpp.o",
+            "C:/Users/jjlok/AppData/Local/Temp/tmptmjd_uth/initialize.cpp.o",
             "src\\initialize.cpp"
         ],
         "directory": "C:\\Users\\jjlok\\OneDrive\\Documents\\GitHub\\NewPros",
@@ -98,10 +98,10 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/opcontrol.cpp.o",
-            "src\\opcontrol.cpp"
+            "C:/Users/jjlok/AppData/Local/Temp/tmptmjd_uth/autonomous.cpp.o",
+            "src\\autonomous.cpp"
         ],
         "directory": "C:\\Users\\jjlok\\OneDrive\\Documents\\GitHub\\NewPros",
-        "file": "src\\opcontrol.cpp"
+        "file": "src\\autonomous.cpp"
     }
 ]

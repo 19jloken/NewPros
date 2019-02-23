@@ -4,6 +4,7 @@
 #include "headers/gui.h"
 #include "headers/general.h"
 #include "pros/llemu.hpp"
+#include "pollSensors.cpp"
 #include "main.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -16,11 +17,13 @@ static lv_obj_t *leftLabel; //sets label for left auton switcher
 static lv_obj_t *rightLabel; //sets label for right auton switcher
 static lv_obj_t *autonTxt;
 static lv_obj_t *confirmTxt;
+static lv_obj_t *gyroValue;
 lv_obj_t * scr1 = lv_page_create(NULL, NULL); //creates the first screen
 lv_obj_t * scr2 = lv_page_create(NULL, NULL); //creates the second screen
 lv_obj_t * scr3 = lv_page_create(NULL, NULL); //creates the third screen
 int auton_sel = 1; //changes when gui buttons are pressed to select auton, defaults to first auton
 int position = 0;
+bool gyro = 0;
 
 static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
 
@@ -204,6 +207,15 @@ static lv_res_t confirm(lv_obj_t * confirmBtn)
 {
 
   lv_scr_load(scr3);
+  gyro = 1;
+
+  return LV_RES_OK;
+}
+
+static lv_res_t gyroReset(lv_obj_t * gyroResetBtn)
+{
+
+  resetGyro();
 
   return LV_RES_OK;
 }
@@ -336,7 +348,7 @@ void firstGui(void)
      lv_obj_set_style(autonTxt, &style_txt);                    /*Set the created style*/
      lv_label_set_long_mode(autonTxt, LV_LABEL_LONG_BREAK);     /*Break the long lines*/
      lv_label_set_recolor(autonTxt, true);                      /*Enable re-coloring by commands in the text*/
-     lv_label_set_align(autonTxt, LV_LABEL_ALIGN_LEFT);       /*Center aligned lines*/
+     lv_label_set_align(autonTxt, LV_LABEL_ALIGN_LEFT);       /*Left aligned lines*/
      lv_obj_set_width(autonTxt, 300);                           /*Set a width*/
      lv_obj_set_pos(autonTxt, 0, 255);
      lv_obj_set_protect(autonTxt, LV_PROTECT_POS);
@@ -370,6 +382,20 @@ void firstGui(void)
 
      confirmTxt = lv_label_create(confirmBtn, NULL);
      lv_label_set_text(confirmTxt, SYMBOL_OK);
+
+     while(gyro)
+     {
+       gyroValue = lv_label_create(scr3, NULL);
+       lv_obj_set_pos(gyroValue, 0, 200);
+       //lv_label_set_text(gyroValue, char *(getRawGyro())); Need to fix
+     }
+
+     lv_obj_t * gyroResetBtn = lv_btn_create(scr3, NULL);
+     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_REL, &confirm_btn_rel);
+     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_PR, &confirm_btn_pr);
+     lv_btn_set_action(gyroResetBtn, LV_BTN_ACTION_CLICK, gyroReset);
+     lv_obj_set_protect(gyroResetBtn, LV_PROTECT_POS);
+     lv_obj_set_pos(gyroResetBtn, 400, 200);
 
 }
 
