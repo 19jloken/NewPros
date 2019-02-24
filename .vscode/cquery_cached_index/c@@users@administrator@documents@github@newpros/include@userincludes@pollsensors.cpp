@@ -18,19 +18,20 @@ const int SensorRefreshRate = 10;
  demaFilter gyroFilter;
  demaFilter leftDriveFilter;
  demaFilter rightDriveFilter;
-
- pros::ADIEncoder leftDriveSensor (6, 2, false);
- pros::ADIEncoder rightDriveSensor (3, 4, false);
+ //
+ // pros::ADIEncoder leftDriveSensor (6, 2, false);
+ // pros::ADIEncoder rightDriveSensor (3, 4, false);
  pros::ADIGyro gyroSensor (5);
  pros::ADIDigitalIn launcherSensor(1);
- pros::ADIDigitalIn autoSensor(7);
- pros::ADIAnalogIn sideSensor(8);
+ pros::ADIDigitalIn flipperSensor(2);
+ // pros::ADIAnalogIn liftSensor(3);
+ pros::ADIAccelerometer accelerometer(1);
 
 void pollSensors(void* param)
 {
 
-   pros::ADIEncoder leftDriveSensor (6, 2, false);
-   pros::ADIEncoder rightDriveSensor (3, 4, false);
+   // pros::ADIEncoder leftDriveSensor (6, 2, false);
+   // pros::ADIEncoder rightDriveSensor (3, 4, false);
    pros::ADIGyro gyroSensor (5);
 
 	newDemaFilter(&gyroFilter);
@@ -73,14 +74,17 @@ bool getLauncherSensor()
 {
 	return launcherSensor.get_value();
 }
-bool getAutoSensor()
+// bool getFlipperSensor()
+// {
+// return flipperSensor.get_value();
+// }
+// float getLiftSensor()
+// {
+// 	return liftSensor.get_value();
+// }
+float getAccelerometer()
 {
-	return autoSensor.get_value();
-}
-
-bool getSideSensor()
-{
-  return sideSensor.get_value();
+  return accelerometer.get_value();
 }
 
 #endif

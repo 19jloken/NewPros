@@ -16,10 +16,13 @@ extern demaFilter rightDriveFilter;
 
 void resetGyro();
 float getRawGyro();
+float getLiftSensor();
+float getAccelerometer();
 void resetLeftDriveSensor();
 void resetRightDriveSensor();
 void resetStrafeDriveSensor();
 bool getLauncherSensor();
+
 bool getAutoSensor();
 bool getSideSensor();
 

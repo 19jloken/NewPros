@@ -4,294 +4,417 @@
 #include "headers/gui.h"
 #include "headers/general.h"
 #include "pros/llemu.hpp"
+#include "pollSensors.cpp"
 #include "main.h"
+#include "display/lv_misc/lv_task.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
-bool leftButtonPressed = false;
-bool centerButtonPressed = false;
-bool rightButtonPressed = false;
+static lv_obj_t *g_sb_label;  // sb text label
+static lv_obj_t *g_auton_region; //tab view region of the screen
+static lv_obj_t *autonLabel; // sets the text for the auton leftButton
+static lv_obj_t *leftLabel; //sets label for left auton switcher
+static lv_obj_t *rightLabel; //sets label for right auton switcher
+static lv_obj_t *autonTxt;
+static lv_obj_t *confirmTxt;
+static lv_obj_t *gyroValue;
+static lv_obj_t *gyroResetLbl;
+lv_obj_t * scr1 = lv_page_create(NULL, NULL); //creates the first screen
+lv_obj_t * scr2 = lv_page_create(NULL, NULL); //creates the second screen
+lv_obj_t * scr3 = lv_page_create(NULL, NULL); //creates the third screen
+int auton_sel = 1; //changes when gui buttons are pressed to select auton, defaults to first auton
+int position = 0;
+bool gyro = 0;
 
-// https://docs.littlevgl.com/
+static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
 
-// int count;
-// int middle = 0;
-// char *auton;
-//
-// static lv_res_t blueFront(lv_obj_t * btn)
-// {
-//   static bool pressed = true;
-//   delay(100);
-//   if (pressed)
-//   {
-//     middle = 1;
-//     pressed = false;
-//     count = 1;
-//     auton = "BLUE FRONT";
-//   }
-//   return LV_RES_OK;
-// }
-//
-// static lv_res_t redFront(lv_obj_t * btn)
-// {
-//   static bool pressed = true;
-//   delay(100);
-//   if (pressed)
-//   {
-//     middle = 1;
-//     pressed = false;
-//     count = 0;
-//     auton = "RED FRONT";
-//   }
-//   return LV_RES_OK;
-// }
-//
-// static lv_res_t blueBack(lv_obj_t * btn)
-// {
-//   static bool pressed = true;
-//   delay(100);
-//   if (pressed)
-//   {
-//     middle = 1;
-//     pressed = false;
-//     count = 3;
-//     auton = "BLUE BACK";
-//   }
-//   return LV_RES_OK;
-// }
-//
-// static lv_res_t redBack(lv_obj_t * btn)
-// {
-//   static bool pressed = true;
-//   delay(100);
-//   if (pressed)
-//   {
-//     middle = 1;
-//     pressed = false;
-//     count = 2;
-//     auton = "RED BACK";
-//   }
-//   return LV_RES_OK;
-// }
+  int btn_num = atoi(txt);
 
-static lv_res_t btn_click_action(lv_obj_t * btn)
-{
-  static lv_obj_t *label = lv_label_create(lv_scr_act(), NULL);
-  uint8_t id = lv_obj_get_free_num(btn);
-  char mytext[64];
+  switch (btn_num) {
+  case 1:
+    lv_label_set_text(g_sb_label, "Red Front Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+     "Backs up and shoots top and middle flags\n"
+     "Drives Forward and turns bottom flag\n"
+     "Backs up, turns, and flips the cap by the flags");
+    auton_sel = 1;
+    lv_scr_load(scr2);
+    break;
+  case 2:
+    lv_label_set_text(g_sb_label, "Red Back Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+      "Turns and shoots top middle flag\n"
+      "Turns and parks on alliance platform");
+    auton_sel = 2;
+    lv_scr_load(scr2);
+    break;
+  case 3:
+    lv_label_set_text(g_sb_label, "Blue Front Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+     "Backs up and shoots top and middle flags\n"
+     "Drives Forward and turns bottom flag\n"
+     "Backs up, turns, and flips the cap by the flags");
+    auton_sel = 3;
+    lv_scr_load(scr2);
+    break;
+  case 4:
+    lv_label_set_text(g_sb_label, "Blue Back Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+      "Turns and shoots top middle flag\n"
+      "Turns and parks on alliance platform");
+    auton_sel = 4;
+    lv_scr_load(scr2);
+    break;
+  case 5:
+    lv_label_set_text(g_sb_label, "Skills Auton1");
+    lv_label_set_text(autonTxt, "");
+    auton_sel = 5;
+    lv_scr_load(scr2);
+    break;
+  case 6:
+    lv_label_set_text(g_sb_label, "Skills Auton2");
+    lv_label_set_text(autonTxt, "");
+    auton_sel = 6;
+    lv_scr_load(scr2);
+    break;
+  }
 
-  /* The button is released.
-  * Make something here */
-
-  return LV_RES_OK; /*Return OK if the button is not deleted*/
-}
-
-/*Called when a button is released ot long pressed*/
-static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt)
-{
-  printf("Button: %s released\n", txt);
+  if (position == 0) //looks for 0 which is the starting value so the loop only runs the very first time an auton is selected from the first scr
+  {
+    lv_obj_set_pos(g_auton_region, 150, 200); //helps place the text in the right position for the first time
+    position ++; //ensures that this loop will never be run again, was having problems after returning to the main scr to select a new auton
+                //and I found that after the set_pos ran for the second time the text was moved to a different location on the scr
+  }
+  else //returns nothing when int position is larger than zero which will happen after the first run
+  {
+  }
 
   return LV_RES_OK; /*Return OK because the button matrix is not deleted*/
 }
 
-
-void gui(void)
+static lv_res_t btn_click_action(lv_obj_t * autonBtn)
 {
-    /********************
-     * CREATE A SCREEN
-     *******************/
-    /* Create a new screen and load it
-     * Screen can be created from any type object type
-     * Now a Page is used which is an objects with scrollable content*/
-
-    lv_obj_t * scr = lv_page_create(NULL, NULL);
-    lv_scr_load(scr);
-
-    /*Create a button descriptor string array*/
-    static const char * btnm_map[] = {"RedF", "RedB", "BlueF", "BlueB", "\n",
-    "RedCap", "BlueCap", "Skills1", "Skills2", ""};
-
-    /*Create a default button matrix*/
-    lv_obj_t * btnm1 = lv_btnm_create(lv_scr_act(), NULL);
-    lv_btnm_set_map(btnm1, btnm_map);
-    lv_btnm_set_action(btnm1, btnm_action);
-    lv_obj_set_size(btnm1, 450, 190);
-
-    /*Create a new style for the button matrix back ground*/
-    static lv_style_t style_bg;
-    lv_style_copy(&style_bg, &lv_style_plain);
-    style_bg.body.main_color = LV_COLOR_SILVER;
-    style_bg.body.grad_color = LV_COLOR_SILVER;
-    style_bg.body.padding.hor = 0;
-    style_bg.body.padding.ver = 0;
-    style_bg.body.padding.inner = 0;
-
-    /*Create 2 button styles*/
-    static lv_style_t style_btn_rel;
-    static lv_style_t style_btn_pr;
-    lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
-    style_btn_rel.body.main_color = LV_COLOR_MAKE(0x30, 0x30, 0x30);
-    style_btn_rel.body.grad_color = LV_COLOR_BLACK;
-    style_btn_rel.body.border.color = LV_COLOR_SILVER;
-    style_btn_rel.body.border.width = 1;
-    style_btn_rel.body.border.opa = LV_OPA_50;
-    style_btn_rel.body.radius = 0;
-
-    // /*Create a normal button*/
-    // static lv_obj_t *btn1 = lv_btn_create(lv_scr_act(), NULL);
-    // lv_cont_set_fit(btn1, true, true); /*Enable resizing horizontally and vertically*/
-    // lv_obj_align(btn1, NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
-    // lv_obj_set_free_num(btn1, 1);   /*Set a unique number for the button*/
-    // lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
-    //
-    // /*Add a label to the button*/
-    // label = lv_label_create(btn1, NULL);
-    // lv_label_set_text(label, "Front Red");
-    //
-    // /*Copy the button and set toggled state. (The release action is copied too)*/
-    // static lv_obj_t *btn2 = lv_btn_create(lv_scr_act(), btn1);
-    // lv_obj_align(btn2, NULL, LV_ALIGN_CENTER, 0, 0);
-    // // lv_btn_set_state(btn2, LV_BTN_STATE_TGL_REL);  /*Set toggled state*/
-    // lv_obj_set_free_num(btn2, 2);               /*Set a unique number for the button*/
-    // lv_btn_set_action(btn2, LV_BTN_ACTION_CLICK, btn_click_action);
-    //
-    // /*Add a label to the toggled button*/
-    // label = lv_label_create(btn2, NULL);
-    // lv_label_set_text(label, "Back Red");
-    //
-    // /*Copy the button and set inactive state.*/
-    // static lv_obj_t *btn3 = lv_btn_create(lv_scr_act(), btn1);
-    // lv_obj_align(btn3, NULL, LV_ALIGN_IN_RIGHT_MID, 0, 10);
-    // //lv_btn_set_state(btn3, LV_BTN_STATE_INA);   /*Set inactive state*/
-    // lv_obj_set_free_num(btn3, 3);               /*Set a unique number for the button*/
-    // lv_btn_set_action(btn3, LV_BTN_ACTION_CLICK, btn_click_action);
-    //
-    // /*Add a label to the inactive button*/
-    // label = lv_label_create(btn3, NULL);
-    // lv_label_set_text(label, "Front Blue");
-    //
-    // /*Copy the button and set inactive state.*/
-    // static lv_obj_t *btn4 = lv_btn_create(lv_scr_act(), btn1);
-    // lv_obj_align(btn4, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, 10);
-    // //lv_btn_set_state(btn3, LV_BTN_STATE_INA);   /*Set inactive state*/
-    // lv_obj_set_free_num(btn4, 4);               /*Set a unique number for the button*/
-    // lv_btn_set_action(btn4, LV_BTN_ACTION_CLICK, btn_click_action);
-    //
-    // /*Add a label to the inactive button*/
-    // label = lv_label_create(btn4, NULL);
-    // lv_label_set_text(label, "Back Blue");
-    //
-    // static lv_obj_t *btn5 = lv_btn_create(lv_scr_act(), btn1);
-    // lv_obj_align(btn5, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 10);
-    // //lv_btn_set_state(btn3, LV_BTN_STATE_INA);   /*Set inactive state*/
-    // lv_obj_set_free_num(btn5, 5);               /*Set a unique number for the button*/
-    // lv_btn_set_action(btn5, LV_BTN_ACTION_CLICK, btn_click_action);
-    //
-    // /*Add a label to the inactive button*/
-    // label = lv_label_create(btn5, NULL);
-    // lv_label_set_text(label, "Skills1");
-    //
-    // static lv_obj_t *btn6 = lv_btn_create(lv_scr_act(), btn1);
-    // lv_obj_align(btn6, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 10);
-    // //lv_btn_set_state(btn3, LV_BTN_STATE_INA);   /*Set inactive state*/
-    // lv_obj_set_free_num(btn6, 6);               /*Set a unique number for the button*/
-    // lv_btn_set_action(btn6, LV_BTN_ACTION_CLICK, btn_click_action);
-    //
-    // /*Add a label to the inactive button*/
-    // label = lv_label_create(btn6, NULL);
-    // lv_label_set_text(label, "Skills2");
-
-    // /*Create a button*/
-    // lv_obj_t * blueF = lv_btn_create(lv_scr_act(), NULL);         /*Create a button on the currently loaded screen*/
-    // lv_btn_set_action(blueF, LV_BTN_ACTION_CLICK, blueFront); /*Set function to be called when the button is released*/
-    // lv_obj_align(blueF, blueF, LV_ALIGN_OUT_BOTTOM_LEFT, 100, 35);  /*Align below the label*/
-    //
-    // /*Create a label on the button (the 'label' variable can be reused)*/
-    // label = lv_label_create(blueF, NULL);
-    // lv_label_set_text(label, "Blue Front");
-    //
-    // // Creates a button for the red front auton //
-    // lv_obj_t * redF = lv_btn_create(lv_scr_act(), NULL);
-    // lv_btn_set_action(blueF, LV_BTN_ACTION_CLICK, redFront);
-    // lv_obj_align(redF, blueF, LV_ALIGN_CENTER, 150, 0);
-    //
-    // label = lv_label_create(redF, NULL);
-    // lv_label_set_text(label, "RED FRONT");
-    //
-    // // Create a button for the red back auton //
-    // lv_obj_t *redB = lv_btn_create(lv_scr_act(),NULL);
-    // lv_btn_set_action(blueF, LV_BTN_ACTION_CLICK, redBack);
-    // lv_obj_align(redB,blueF,LV_ALIGN_OUT_BOTTOM_MID,0,10);
-    //
-    // label = lv_label_create(redB,NULL);
-    // lv_label_set_text(label,"RED BACK");
-    //
-    // // Create a button for the blue back auton //
-    // lv_obj_t *blueB = lv_btn_create(lv_scr_act(),NULL);
-    // lv_btn_set_action(blueF, LV_BTN_ACTION_CLICK, blueBack);
-    // lv_obj_align(blueB,redF,LV_ALIGN_OUT_BOTTOM_MID,0,10);
-    //
-    // label = lv_label_create(blueB,NULL);
-    // lv_label_set_text(label,"BLUE BACK");
+    lv_scr_load(scr1); //returns to screen 1 after the auton button is pressed
 
 
-
+    return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-void autonomousSelection()
+static lv_res_t left(lv_obj_t * rightButton)
 {
-  if(autonomousSelected)
+
+  if (auton_sel == 1) //if rolling list reaches 1, the last value, it will run this loop
   {
-  // pros::lcd::print(0, "Autonomous %d selected", autonomousMode);
-  //   pros::lcd::set_text(1, "Center Btn to deselect");
-  //   pros::lcd::register_btn1_cb(unselectAutonomous);
+    auton_sel = 6; //the value is set back to the top so the list appears to forever be able to scroll through
   }
   else
   {
-    // pros::lcd::print(0, "Autonomous %d", autonomousMode);
-    // pros::lcd::set_text(1, "Center Btn to select");
-    // pros::lcd::register_btn0_cb(decreaseAutonomousMode);
-    // pros::lcd::register_btn1_cb(selectAutonomous);
-    // pros::lcd::register_btn2_cb(increaseAutonomousMode);
+    auton_sel--; //if the list is not at the bottom, then the int will have 1 taken off each click
   }
+
+  switch (auton_sel) {
+  case 1:
+    lv_label_set_text(g_sb_label, "Red Front Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+     "Backs up and shoots top and middle flags\n"
+     "Drives Forward and turns bottom flag\n"
+     "Backs up, turns, and flips the cap by the flags");
+    break;
+  case 2:
+    lv_label_set_text(g_sb_label, "Red Back Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+      "Turns and shoots top middle flag\n"
+      "Turns and parks on alliance platform");
+    break;
+  case 3:
+    lv_label_set_text(g_sb_label, "Blue Front Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+     "Backs up and shoots top and middle flags\n"
+     "Drives Forward and turns bottom flag\n"
+     "Backs up, turns, and flips the cap by the flags");
+    break;
+  case 4:
+    lv_label_set_text(g_sb_label, "Blue Back Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+      "Turns and shoots top middle flag\n"
+      "Turns and parks on alliance platform");
+    break;
+  case 5:
+    lv_label_set_text(g_sb_label, "Skills Auton1");
+    lv_label_set_text(autonTxt, "");
+    break;
+  case 6:
+    lv_label_set_text(g_sb_label, "Skills Auton2");
+    lv_label_set_text(autonTxt, "");
+    break;
+  }
+
+  return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-void decreaseAutonomousMode()
+static lv_res_t right(lv_obj_t * leftButton)
 {
-  leftButtonPressed = !leftButtonPressed;
-  if (leftButtonPressed)
-	{
-		autonomousMode--;
-		if(autonomousMode < 1)
-		autonomousMode = 16;
+
+  if (auton_sel == 6) //if int is at 6 it has reached the top value of the list
+  {
+    auton_sel = 1; //it will reset to the bottom by making the int 1 and create an infinite scroll
   }
+  else
+  {
+    auton_sel++; //if list is not at the top, will add 1 to int every click
+  }
+
+  switch (auton_sel) {
+  case 1:
+    lv_label_set_text(g_sb_label, "Red Front Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+     "Backs up and shoots top and middle flags\n"
+     "Drives Forward and turns bottom flag\n"
+     "Backs up, turns, and flips the cap by the flags");
+    break;
+  case 2:
+    lv_label_set_text(g_sb_label, "Red Back Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+      "Turns and shoots top middle flag\n"
+      "Turns and parks on alliance platform");
+    break;
+  case 3:
+    lv_label_set_text(g_sb_label, "Blue Front Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+     "Backs up and shoots top and middle flags\n"
+     "Drives Forward and turns bottom flag\n"
+     "Backs up, turns, and flips the cap by the flags");
+    break;
+  case 4:
+    lv_label_set_text(g_sb_label, "Blue Back Auton");
+    lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
+      "Turns and shoots top middle flag\n"
+      "Turns and parks on alliance platform");
+    break;
+  case 5:
+    lv_label_set_text(g_sb_label, "Skills Auton1");
+    lv_label_set_text(autonTxt, "");
+    break;
+  case 6:
+    lv_label_set_text(g_sb_label, "Skills Auton2");
+    lv_label_set_text(autonTxt, "");
+    break;
+  }
+
+  return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-void selectAutonomous()
+static lv_res_t confirm(lv_obj_t * confirmBtn)//when the confirm button is pressed
 {
-  centerButtonPressed = !centerButtonPressed;
-  if (centerButtonPressed)
-	{
-		autonomousSelected = true;
-  }
+
+  lv_scr_load(scr3);//loads the third scr
+  gyro = 1;//sets bool to true so the live gyro values will start showing
+
+  return LV_RES_OK;
 }
 
-void increaseAutonomousMode()
+static lv_res_t gyroReset(lv_obj_t * gyroResetBtn)//when gyro reset button is pressed
 {
-  rightButtonPressed = !rightButtonPressed;
-  if (rightButtonPressed)
-	{
-		autonomousMode++;
-		if(autonomousMode > 16)
-		autonomousMode = 1;
-  }
+
+  resetGyro();//runs the resent gyro function so robot can be readjusted and gyro then rezeroed
+
+  return LV_RES_OK;
 }
 
-void unselectAutonomous()
+// void my_refr_func(void* p)
+// {
+//     lv_label_set_text(my_label, "time and date");
+// }
+//
+// /*Call `my_refr_func` in every 1000 ms with a LOW priority*/
+// lv_task_create(my_refr_func, 1000, LV_TASK_PRIO_LOW, NULL);
+
+/*This function wil be called periodically to refresh the label*/
+
+
+void gui(void)
 {
-	centerButtonPressed = !centerButtonPressed;
-	if(centerButtonPressed)
-	{
-		autonomousSelected = false;
-	}
+    // Create a new screen and load it
+     lv_scr_load(scr1);
+
+     //Creates button styles
+     static lv_style_t style_btn_rel;
+     static lv_style_t style_btn_pr;
+     static lv_style_t toggle_btn_rel;
+     static lv_style_t toggle_btn_pr;
+     static lv_style_t confirm_btn_rel;
+     static lv_style_t confirm_btn_pr;
+
+     lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
+     //sets the style for when the button is not pressed
+     style_btn_rel.body.main_color = LV_COLOR_GREEN;
+     style_btn_rel.body.grad_color = LV_COLOR_GREEN;
+     style_btn_rel.body.border.color = LV_COLOR_BLUE;
+     style_btn_rel.body.border.width = 2;
+     style_btn_rel.body.border.opa = LV_OPA_50;
+     style_btn_rel.body.radius = 5;
+
+     lv_style_copy(&style_btn_pr, &style_btn_rel);
+     //sets the style for when the button is pressed
+     style_btn_pr.body.main_color = LV_COLOR_BLUE;
+     style_btn_pr.body.grad_color = LV_COLOR_BLUE;
+     style_btn_pr.body.border.color = LV_COLOR_GREEN;
+     style_btn_pr.body.border.width = 2;
+     style_btn_pr.body.border.opa = LV_OPA_100;
+     style_btn_pr.body.radius = 5;
+
+     /*Creates a new style for the button matrix back ground to be transparent*/
+     static lv_style_t style_bg;
+     lv_style_copy(&style_bg, &lv_style_plain);
+     style_bg.body.empty = true;
+     style_bg.body.border.opa = LV_OPA_TRANSP; //makes border transparent as well
+
+     //Creates a label style so we can see text on the dark background
+     static lv_style_t style_txt;
+     lv_style_copy(&style_txt, &lv_style_plain);
+     style_txt.text.letter_space = 2;
+     style_txt.text.line_space = 1;
+     style_txt.text.color = LV_COLOR_WHITE;
+
+     // Create a button descriptor string array w/ no repeat "\224"
+     static const char * btnm_map[] = { "\2241", "\2242", "\2243", "\n",
+                                        "\2244", "\2245", "\2246", "" };
+
+     // Create a default button matrix* no repeat
+     lv_obj_t *btnm = lv_btnm_create(scr1, NULL);
+     lv_obj_set_size(btnm, 450, 190);
+     lv_btnm_set_style(btnm, LV_BTNM_STYLE_BG, &style_bg);
+     lv_btnm_set_style(btnm, LV_BTNM_STYLE_BTN_REL, &style_btn_rel);
+     lv_btnm_set_style(btnm, LV_BTNM_STYLE_BTN_PR, &style_btn_pr);
+
+     lv_btnm_set_map(btnm, btnm_map);
+     lv_btnm_set_action(btnm, btnm_action);
+
+     g_auton_region = lv_cont_create(scr2, NULL);
+     lv_obj_set_protect(g_auton_region, LV_PROTECT_POS);
+     lv_cont_set_fit(g_auton_region, true, true);
+     lv_obj_set_pos(g_auton_region, 150, 200);
+     lv_obj_set_style(g_auton_region, &style_bg);
+
+     g_sb_label = lv_label_create(g_auton_region, NULL);
+     lv_obj_set_protect(g_sb_label, LV_PROTECT_POS);
+     lv_obj_set_style(g_sb_label, &style_txt);
+     lv_obj_align(g_sb_label, NULL, LV_ALIGN_CENTER, 0, 0);
+
+
+     lv_style_copy(&toggle_btn_rel, &lv_style_plain);
+     //sets the style for when the button is not pressed
+     toggle_btn_rel.body.main_color = LV_COLOR_SILVER;
+     toggle_btn_rel.body.grad_color = LV_COLOR_SILVER;
+     toggle_btn_rel.body.border.color = LV_COLOR_NAVY;
+     toggle_btn_rel.body.border.width = 2;
+     toggle_btn_rel.body.border.opa = LV_OPA_50;
+     toggle_btn_rel.body.radius = 5;
+
+     lv_style_copy(&toggle_btn_pr, &toggle_btn_rel);
+     //sets the style for when the button is pressed
+     toggle_btn_pr.body.main_color = LV_COLOR_NAVY;
+     toggle_btn_pr.body.grad_color = LV_COLOR_NAVY;
+     toggle_btn_pr.body.border.color = LV_COLOR_SILVER;
+     toggle_btn_pr.body.border.width = 2;
+     toggle_btn_pr.body.border.opa = LV_OPA_50;
+     toggle_btn_pr.body.radius = 5;
+
+     /*Create a normal button*/
+     lv_obj_t * autonBtn = lv_btn_create(scr2, NULL);
+     lv_btn_set_style(autonBtn, LV_BTN_STYLE_REL, &style_btn_rel);
+     lv_btn_set_style(autonBtn, LV_BTN_STYLE_PR, &style_btn_pr);
+     lv_obj_set_protect(autonBtn, LV_PROTECT_POS);
+     lv_cont_set_fit(autonBtn, true, true); /*Enable resizing horizontally and vertically*/
+     lv_btn_set_action(autonBtn, LV_BTN_ACTION_CLICK, btn_click_action);
+     lv_obj_set_pos(autonBtn, 325, 300);
+
+     /*Add a label to the button*/
+     autonLabel = lv_label_create(autonBtn, NULL);
+     lv_label_set_text(autonLabel, "Autons");
+
+     lv_obj_t * leftButton = lv_btn_create(scr2, NULL);
+     lv_obj_set_width(leftButton, 50);
+     lv_obj_set_height(leftButton, 50);
+     lv_btn_set_style(leftButton, LV_BTN_STYLE_REL, &toggle_btn_rel);
+     lv_btn_set_style(leftButton, LV_BTN_STYLE_PR, &toggle_btn_pr);
+     lv_btn_set_action(leftButton, LV_BTN_ACTION_CLICK, left);
+     lv_obj_set_pos(leftButton, 95, 200); //y-pos must be 200 to prevent other objects from shifting
+
+     leftLabel = lv_label_create(leftButton, NULL);
+     lv_label_set_text(leftLabel, SYMBOL_LEFT);
+
+     lv_obj_t * rightButton = lv_btn_create(scr2, NULL);
+     lv_obj_set_width(rightButton, 50);
+     lv_obj_set_height(rightButton, 50);
+     lv_btn_set_style(rightButton, LV_BTN_STYLE_REL, &toggle_btn_rel);
+     lv_btn_set_style(rightButton, LV_BTN_STYLE_PR, &toggle_btn_pr);
+     lv_btn_set_action(rightButton, LV_BTN_ACTION_CLICK, right);
+     lv_obj_set_pos(rightButton, 320, 200);
+
+     rightLabel = lv_label_create(rightButton, NULL);
+     lv_label_set_text(rightLabel, SYMBOL_RIGHT);
+
+     /*Create a new label*/
+     autonTxt = lv_label_create(scr2, NULL);
+     lv_obj_set_style(autonTxt, &style_txt);                    /*Set the created style*/
+     lv_label_set_long_mode(autonTxt, LV_LABEL_LONG_BREAK);     /*Break the long lines*/
+     lv_label_set_recolor(autonTxt, true);                      /*Enable re-coloring by commands in the text*/
+     lv_label_set_align(autonTxt, LV_LABEL_ALIGN_LEFT);       /*Left aligned lines*/
+     lv_obj_set_width(autonTxt, 300);                           /*Set a width*/
+     lv_obj_set_pos(autonTxt, 0, 255);
+     lv_obj_set_protect(autonTxt, LV_PROTECT_POS);
+
+     lv_style_copy(&confirm_btn_rel, &lv_style_plain);
+     //sets the style for when the button is not pressed
+     confirm_btn_rel.body.main_color = LV_COLOR_RED;
+     confirm_btn_rel.body.grad_color = LV_COLOR_YELLOW;
+     confirm_btn_rel.body.border.color = LV_COLOR_SILVER;
+     confirm_btn_rel.body.border.width = 2;
+     confirm_btn_rel.body.border.opa = LV_OPA_50;
+     confirm_btn_rel.body.radius = 5;
+
+     lv_style_copy(&confirm_btn_pr, &confirm_btn_rel);
+     //sets the style for when the button is pressed
+     confirm_btn_pr.body.main_color = LV_COLOR_YELLOW;
+     confirm_btn_pr.body.grad_color = LV_COLOR_RED;
+     confirm_btn_pr.body.border.color = LV_COLOR_SILVER;
+     confirm_btn_pr.body.border.width = 2;
+     confirm_btn_pr.body.border.opa = LV_OPA_50;
+     confirm_btn_pr.body.radius = 5;
+
+     lv_obj_t * confirmBtn = lv_btn_create(scr2, NULL);
+     lv_obj_set_width(confirmBtn, 50);
+     lv_obj_set_height(confirmBtn, 50);
+     lv_btn_set_style(confirmBtn, LV_BTN_STYLE_REL, &confirm_btn_rel);
+     lv_btn_set_style(confirmBtn, LV_BTN_STYLE_PR, &confirm_btn_pr);
+     lv_btn_set_action(confirmBtn, LV_BTN_ACTION_CLICK, confirm);
+     lv_obj_set_protect(confirmBtn, LV_PROTECT_POS);
+     lv_obj_set_pos(confirmBtn, 400, 200);
+
+     confirmTxt = lv_label_create(confirmBtn, NULL);
+     lv_label_set_text(confirmTxt, SYMBOL_OK);
+
+     while(gyro)
+     {
+       gyroValue = lv_label_create(scr3, NULL);
+       lv_obj_set_pos(gyroValue, 0, 200);
+       // lv_label_set_text(gyroValue, "Gyro: %d", getGyroSensor());
+     }
+
+     lv_obj_t * gyroResetBtn = lv_btn_create(scr3, NULL);
+     lv_obj_set_height(gyroResetBtn, 40);
+     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_REL, &confirm_btn_rel);
+     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_PR, &confirm_btn_pr);
+     lv_btn_set_action(gyroResetBtn, LV_BTN_ACTION_CLICK, gyroReset);
+     lv_obj_set_protect(gyroResetBtn, LV_PROTECT_POS);
+     lv_obj_set_pos(gyroResetBtn, 320, 200);
+
+     gyroResetLbl = lv_label_create(gyroResetBtn, NULL);
+     lv_label_set_text(gyroResetLbl, "Zero Gyro");
+     lv_obj_set_style(gyroResetLbl, &style_txt);
+
 }
 
 #endif

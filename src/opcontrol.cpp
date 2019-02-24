@@ -139,11 +139,11 @@ void doubleControllerDrive()
     moveIntake(0);
   }
 
-  if(partner.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+  if(partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y))
   {
     moveFlipper(-127);
   }
-  else if(partner.get_digital(E_CONTROLLER_DIGITAL_L2))
+  else if(partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y))
   {
     moveFlipper(127);
   }

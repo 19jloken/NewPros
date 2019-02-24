@@ -24,7 +24,7 @@ const int SensorRefreshRate = 10;
  pros::ADIGyro gyroSensor (5);
  pros::ADIDigitalIn launcherSensor(1);
  pros::ADIDigitalIn flipperSensor(2);
- pros::ADIAnalogIn liftSensor(3);
+ // pros::ADIAnalogIn liftSensor(3);
  pros::ADIAccelerometer accelerometer(1);
 
 void pollSensors(void* param)
@@ -74,14 +74,14 @@ bool getLauncherSensor()
 {
 	return launcherSensor.get_value();
 }
-bool getFlipperSensor()
-{
-	return flipperSensor.get_value();
-}
-float getLiftSensor()
-{
-	return liftSensor.get_value();
-}
+// bool getFlipperSensor()
+// {
+// return flipperSensor.get_value();
+// }
+// float getLiftSensor()
+// {
+// 	return liftSensor.get_value();
+// }
 float getAccelerometer()
 {
   return accelerometer.get_value();

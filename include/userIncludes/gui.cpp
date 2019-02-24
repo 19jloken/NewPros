@@ -6,6 +6,7 @@
 #include "pros/llemu.hpp"
 #include "pollSensors.cpp"
 #include "main.h"
+#include "display/lv_misc/lv_task.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -18,6 +19,7 @@ static lv_obj_t *rightLabel; //sets label for right auton switcher
 static lv_obj_t *autonTxt;
 static lv_obj_t *confirmTxt;
 static lv_obj_t *gyroValue;
+static lv_obj_t *gyroResetLbl;
 lv_obj_t * scr1 = lv_page_create(NULL, NULL); //creates the first screen
 lv_obj_t * scr2 = lv_page_create(NULL, NULL); //creates the second screen
 lv_obj_t * scr3 = lv_page_create(NULL, NULL); //creates the third screen
@@ -203,24 +205,35 @@ static lv_res_t right(lv_obj_t * leftButton)
   return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-static lv_res_t confirm(lv_obj_t * confirmBtn)
+static lv_res_t confirm(lv_obj_t * confirmBtn)//when the confirm button is pressed
 {
 
-  lv_scr_load(scr3);
-  gyro = 1;
+  lv_scr_load(scr3);//loads the third scr
+  gyro = 1;//sets bool to true so the live gyro values will start showing
 
   return LV_RES_OK;
 }
 
-static lv_res_t gyroReset(lv_obj_t * gyroResetBtn)
+static lv_res_t gyroReset(lv_obj_t * gyroResetBtn)//when gyro reset button is pressed
 {
 
-  resetGyro();
+  resetGyro();//runs the resent gyro function so robot can be readjusted and gyro then rezeroed
 
   return LV_RES_OK;
 }
 
-void firstGui(void)
+// void my_refr_func(void* p)
+// {
+//     lv_label_set_text(my_label, "time and date");
+// }
+//
+// /*Call `my_refr_func` in every 1000 ms with a LOW priority*/
+// lv_task_create(my_refr_func, 1000, LV_TASK_PRIO_LOW, NULL);
+
+/*This function wil be called periodically to refresh the label*/
+
+
+void gui(void)
 {
     // Create a new screen and load it
      lv_scr_load(scr1);
@@ -387,15 +400,20 @@ void firstGui(void)
      {
        gyroValue = lv_label_create(scr3, NULL);
        lv_obj_set_pos(gyroValue, 0, 200);
-       //lv_label_set_text(gyroValue, char *(getRawGyro())); Need to fix
+       // lv_label_set_text(gyroValue, "Gyro: %d", getGyroSensor());
      }
 
      lv_obj_t * gyroResetBtn = lv_btn_create(scr3, NULL);
+     lv_obj_set_height(gyroResetBtn, 40);
      lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_REL, &confirm_btn_rel);
      lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_PR, &confirm_btn_pr);
      lv_btn_set_action(gyroResetBtn, LV_BTN_ACTION_CLICK, gyroReset);
      lv_obj_set_protect(gyroResetBtn, LV_PROTECT_POS);
-     lv_obj_set_pos(gyroResetBtn, 400, 200);
+     lv_obj_set_pos(gyroResetBtn, 320, 200);
+
+     gyroResetLbl = lv_label_create(gyroResetBtn, NULL);
+     lv_label_set_text(gyroResetLbl, "Zero Gyro");
+     lv_obj_set_style(gyroResetLbl, &style_txt);
 
 }
 
