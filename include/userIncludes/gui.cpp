@@ -23,6 +23,12 @@ static lv_obj_t *gyroValue;
 static lv_obj_t *gyroResetLbl;
 static lv_obj_t *returnTxt;
 static lv_obj_t *runAutonTxt;
+static lv_obj_t *rightDriveTxt;
+static lv_obj_t *leftDriveTxt;
+static lv_obj_t *zeroDriveTxt;
+static lv_obj_t *accX;
+static lv_obj_t *accY;
+static lv_obj_t *accZ;
 lv_obj_t * scr1 = lv_page_create(NULL, NULL); //creates the first screen
 lv_obj_t * scr2 = lv_page_create(NULL, NULL); //creates the second screen
 lv_obj_t * scr3 = lv_page_create(NULL, NULL); //creates the third screen
@@ -312,35 +318,51 @@ void label_refresher_gyro(void * p) //begins the loop that will autoupdate the g
   }
 }
 
-void label_refresher_left_drive(void * p) //begins the loop that will autoupdate the gyro value label
+void label_refresher_left_drive(void * p) //begins the loop that will autoupdate the left encoder label
 {
   static uint32_t prev_value = 0;
 
-  if(prev_value != getGyroSensor())
+  if(prev_value != getLeftDriveSensor())
   {
-    if(lv_obj_get_screen(gyroValue) == scr3)
+    if(lv_obj_get_screen(leftDriveTxt) == scr3)
     {
       char buf[32];
-      sprintf(buf, "Gyro: %d", int(getGyroSensor()));
-      lv_label_set_text(gyroValue, buf);
+      sprintf(buf, "Left Drive: %d", int(getLeftDriveSensor()));
+      lv_label_set_text(leftDriveTxt, buf);
     }
-    prev_value = getGyroSensor();
+    prev_value = getLeftDriveSensor();
   }
 }
 
-void label_refresher_right_drive(void * p) //begins the loop that will autoupdate the gyro value label
+void label_refresher_right_drive(void * p) //begins the loop that will autoupdate the right encoder label
 {
-    static uint32_t prev_value = 0; //creates a new value
+    static uint32_t prev_value = 0;
 
-    if(prev_value != getRawGyro()) //looks if created value is not equal to the gyro's value
+    if(prev_value != getRightDriveSensor())
     {
-        if(lv_obj_get_screen(gyroValue) == scr3) //if label is on scr3
+        if(lv_obj_get_screen(rightDriveTxt) == scr3)
         {
             char buf[32];
-            sprintf(buf, "Gyro: %d", int(getRawGyro()));
-            lv_label_set_text(gyroValue, buf);
+            sprintf(buf, "Right Drive: %d", int(getRightDriveSensor()));
+            lv_label_set_text(rightDriveTxt, buf);
         }
-        prev_value = getRawGyro();
+        prev_value = getRightDriveSensor();
+    }
+}
+
+void label_refresher_accelerometer_x(void * p) //begins the loop that will autoupdate the right encoder label
+{
+    static uint32_t prev_value = 0;
+
+    if(prev_value != getAccelerometerX())
+    {
+        if(lv_obj_get_screen(rightDriveTxt) == scr3)
+        {
+            char buf[32];
+            sprintf(buf, "Right Drive: %d", int(getRightDriveSensor()));
+            lv_label_set_text(rightDriveTxt, buf);
+        }
+        prev_value = getRightDriveSensor();
     }
 }
 
@@ -556,6 +578,32 @@ void gui(void)
      runAutonTxt = lv_label_create(runAutonBtn, NULL);
      lv_label_set_text(runAutonTxt, "Run Auton");
      lv_obj_set_style(runAutonTxt, &style_txt);
+
+     rightDriveTxt = lv_label_create(scr3, NULL);
+     lv_obj_set_pos(rightDriveTxt, 10, 10);
+     lv_obj_set_style(rightDriveTxt, &style_txt);
+     lv_task_create(label_refresher_right_drive, 100, LV_TASK_PRIO_MID, NULL);
+
+     leftDriveTxt = lv_label_create(scr3, NULL);
+     lv_obj_set_pos(leftDriveTxt, 10, 20);
+     lv_obj_set_style(leftDriveTxt, &style_txt);
+     lv_task_create(label_refresher_left_drive, 100, LV_TASK_PRIO_MID, NULL);
+
+     lv_obj_t * zeroDrive = lv_btn_create(scr3, NULL);
+     lv_cont_set_fit(zeroDrive, true, false); //allows width to fit label but set the height
+     lv_obj_set_height(zeroDrive, 100);
+     lv_btn_set_style(zeroDrive, LV_BTN_STYLE_REL, &rezero_btn_rel);
+     lv_btn_set_style(zeroDrive, LV_BTN_STYLE_PR, &rezero_btn_pr);
+     lv_btn_set_action(zeroDrive, LV_BTN_ACTION_CLICK, runAuton);
+     lv_obj_set_protect(zeroDrive, LV_PROTECT_POS);
+     lv_obj_set_pos(zeroDrive, 400, 20);
+
+     zeroDriveTxt = lv_label_create(zeroDrive, NULL);
+     lv_label_set_text(zeroDriveTxt, "Zero Drive");
+     lv_obj_set_style(zeroDriveTxt, &style_txt);
+
+     // accX = lv_label_create(scr3, leftDriveTxt);
+     // lv_obj_set_pos()
 
 }
 

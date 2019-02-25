@@ -38,21 +38,15 @@ void initialize()
   // pros::lcd::set_text(2, "Calibrating");
   // pros::c::adi_analog_calibrate(5);
 
-  acc_x.calibrate(); //calibrates the x axis input
-  acc_y.calibrate(); //calibrates the y axis input
-  acc_z.calibrate(); //calibrates the z axis input
-  int accelerometer_x = acc_x.get_value_calibrated_HR();
-  int accelerometer_y = acc_y.get_value_calibrated_HR();
-  int accelerometer_z = acc_z.get_value_calibrated_HR();
 
   motorArray[0]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[1]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[2]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[3]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  motorArray[4]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  motorArray[4]->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   motorArray[5]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  motorArray[6]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  motorArray[7]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  motorArray[6]->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  motorArray[7]->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	addMotor(0);
 	addMotor(1);

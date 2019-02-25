@@ -14,6 +14,9 @@ float getGyroSensor();
 float getLiftSensor();
 float getIntakeSensor();
 float getFlipperSensor();
+float getAccelerometerX();
+float getAccelerometerY();
+float getAccelerometerZ();
 bool getLauncherSensor();
 bool isLauncherLoaded();
 
@@ -29,6 +32,7 @@ enum Commands
   gyroDriveStraight,
   gyroTurn,
   turn,
+  accelerometerPark,
 
   PIDDriveCommandMaxValue,
 
