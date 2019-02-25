@@ -38,6 +38,13 @@ void initialize()
   // pros::lcd::set_text(2, "Calibrating");
   // pros::c::adi_analog_calibrate(5);
 
+  acc_x.calibrate(); //calibrates the x axis input
+  acc_y.calibrate(); //calibrates the y axis input
+  acc_z.calibrate(); //calibrates the z axis input
+  int accelerometer_x = acc_x.get_value_calibrated_HR();
+  int accelerometer_y = acc_y.get_value_calibrated_HR();
+  int accelerometer_z = acc_z.get_value_calibrated_HR();
+
   motorArray[0]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[1]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[2]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -77,6 +84,7 @@ void initialize()
   motorArray[backRightDrive]->set_reversed(true);
   motorArray[shooter]->set_reversed(true);
   motorArray[intakeMotor]->set_reversed(true);
+  motorArray[flipperMotor]->set_reversed(true);
 
   int x = 0;
   while(x < 500)

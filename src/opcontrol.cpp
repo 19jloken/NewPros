@@ -139,18 +139,7 @@ void doubleControllerDrive()
     moveIntake(0);
   }
 
-  if(partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y))
-  {
-    moveFlipper(-127);
-  }
-  else if(partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y))
-  {
-    moveFlipper(127);
-  }
-  else
-  {
-    moveFlipper(0);
-  }
+  moveFlipper(partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
 
 
   if(isLauncherLoaded() || (fabs(firstLoadedPostion - motorArray[6]->get_position()) < 150 && launcherWasLoaded))
@@ -162,7 +151,7 @@ void doubleControllerDrive()
       launcherWasLoaded = true;
       zeroTimer(&opLauncherTimer);
       stopTimer(&opLauncherTimer);
-      if(partner.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+      if(partner.get_digital(pros::E_CONTROLLER_DIGITAL_A) || master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
       {
         moveLauncher(127);
       }
@@ -191,7 +180,117 @@ void doubleControllerDrive()
 
 void singleControllerDrive()
 {
-  doubleControllerDrive();
+  // userAutonomousTask.suspend();
+  robotFunctionTask.suspend();
+  float leftIn;
+  float rightIn;
+  float tempLeftIn;
+  float tempRightIn;
+  int strafe;
+
+  leftIn = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+  rightIn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+
+
+  if(control)
+  {
+    leftIn = (leftIn*.5);
+    rightIn = (rightIn*.5);
+  }
+
+  if (curve)
+  {
+    leftIn = fabs(leftIn)*leftIn/127;
+    rightIn = fabs(rightIn)*rightIn/127;
+  }
+
+  if(inversed)
+  {
+    tempLeftIn = -rightIn;
+    tempRightIn = -leftIn;
+    leftIn = tempLeftIn;
+    rightIn = tempRightIn;
+  }
+
+  strafe = master.get_digital(E_CONTROLLER_DIGITAL_R1) + master.get_digital(E_CONTROLLER_DIGITAL_R2) - master.get_digital(E_CONTROLLER_DIGITAL_L1) - master.get_digital(E_CONTROLLER_DIGITAL_L2);
+
+  moveDrive(leftIn, rightIn, strafe);
+
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+  {
+    while(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+    {
+      pros::delay(5);
+    }
+     autonomous();
+     while(!master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+    {
+      pros::delay(5);
+    }
+    while(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+    {
+      pros::delay(5);
+    }
+  }
+
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+  {
+    moveIntake(-127);
+  }
+  else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+  {
+    moveIntake(127);
+  }
+  else
+  {
+    moveIntake(0);
+  }
+
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
+  {
+    moveFlipper(-127);
+  }
+  else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+  {
+    moveFlipper(127);
+  }
+  else
+  {
+    moveFlipper(0);
+  }
+
+
+  if(isLauncherLoaded() || (fabs(firstLoadedPostion - motorArray[6]->get_position()) < 150 && launcherWasLoaded))
+  {
+    if(!launcherWasLoaded)
+    {
+      firstLoadedPostion = motorArray[6]->get_position();
+    }
+      launcherWasLoaded = true;
+      zeroTimer(&opLauncherTimer);
+      stopTimer(&opLauncherTimer);
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+      {
+        moveLauncher(127);
+      }
+      else
+      {
+        moveLauncher(0);
+      }
+  }
+  else
+  {
+    launcherWasLoaded = false;
+    startTimer(&opLauncherTimer);
+    if(currentTime(&opLauncherTimer) > 400)
+    {
+      moveLauncher(127);
+    }
+    else
+    {
+      moveLauncher(0);
+    }
+  }
   // userAutonomousTask.resume();
   // autonomous();
 }

@@ -11,6 +11,10 @@
 #include "headers/gyroFunctions.h"
 #include "pros/llemu.hpp"
 
+#define ACCELEROMETER_X 4
+#define ACCELEROMETER_Y 5
+#define ACCELEROMETER_Z 6
+
 pros::Task pollSensorsTask(pollSensors, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "pollSensorsTask");
 
 const int SensorRefreshRate = 10;
@@ -18,14 +22,19 @@ const int SensorRefreshRate = 10;
  demaFilter gyroFilter;
  demaFilter leftDriveFilter;
  demaFilter rightDriveFilter;
+
+
  //
  // pros::ADIEncoder leftDriveSensor (6, 2, false);
  // pros::ADIEncoder rightDriveSensor (3, 4, false);
- pros::ADIGyro gyroSensor (5);
+ pros::ADIGyro gyroSensor (3);
  pros::ADIDigitalIn launcherSensor(1);
  pros::ADIDigitalIn flipperSensor(2);
- pros::ADIAnalogIn liftSensor(3);
- pros::ADIAccelerometer accelerometer(1);
+ // pros::ADIAnalogIn liftSensor(3);
+
+ pros::ADIAnalogIn acc_x (ACCELEROMETER_X);
+ pros::ADIAnalogIn acc_y (ACCELEROMETER_Y);
+ pros::ADIAnalogIn acc_z (ACCELEROMETER_Z);
 
 void pollSensors(void* param)
 {
@@ -50,7 +59,10 @@ void pollSensors(void* param)
     // pros::lcd::print(7, "get raw gyro sensor %f", gyroSensor.get_value());
 
     pros::c::task_delay_until(&lastRun, SensorRefreshRate);
-		lastRun = pros::c::millis();
+    lastRun = pros::c::millis();
+
+
+
 	}
 }
 
@@ -74,17 +86,17 @@ bool getLauncherSensor()
 {
 	return launcherSensor.get_value();
 }
-bool getFlipperSensor()
-{
-	return flipperSensor.get_value();
-}
-float getLiftSensor()
-{
-	return liftSensor.get_value();
-}
-float getAccelerometer()
-{
-  return accelerometer.get_value();
-}
+// bool getFlipperSensor()
+// {
+// return flipperSensor.get_value();
+// }
+// float getLiftSensor()
+// {
+// 	return liftSensor.get_value();
+// }
+// float getAccelerometer()
+// {
+//   return accelerometer.get_value();
+// }
 
 #endif

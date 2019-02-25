@@ -7,6 +7,7 @@
 #include "pollSensors.cpp"
 #include "main.h"
 #include "display/lv_misc/lv_task.h"
+#include "robotFunction.cpp"
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -20,16 +21,31 @@ static lv_obj_t *autonTxt;
 static lv_obj_t *confirmTxt;
 static lv_obj_t *gyroValue;
 static lv_obj_t *gyroResetLbl;
+static lv_obj_t *returnTxt;
+static lv_obj_t *runAutonTxt;
 lv_obj_t * scr1 = lv_page_create(NULL, NULL); //creates the first screen
 lv_obj_t * scr2 = lv_page_create(NULL, NULL); //creates the second screen
 lv_obj_t * scr3 = lv_page_create(NULL, NULL); //creates the third screen
 int auton_sel = 1; //changes when gui buttons are pressed to select auton, defaults to first auton
 int position = 0;
+int color;
 bool gyro = 0;
 
 static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
 
   int btn_num = atoi(txt);
+
+  static lv_style_t red;
+  lv_style_copy(&red, &lv_style_scr);
+  red.body.main_color = LV_COLOR_RED;
+  red.body.grad_color = LV_COLOR_RED;
+  red.body.border.color = LV_COLOR_RED;
+
+  static lv_style_t blue;
+  lv_style_copy(&blue, &lv_style_scr);
+  blue.body.main_color = LV_COLOR_BLUE;
+  blue.body.grad_color = LV_COLOR_BLUE;
+  blue.body.border.color = LV_COLOR_BLUE;
 
   switch (btn_num) {
   case 1:
@@ -39,6 +55,7 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
      "Drives Forward and turns bottom flag\n"
      "Backs up, turns, and flips the cap by the flags");
     auton_sel = 1;
+    lv_obj_set_style(scr3, &red);
     lv_scr_load(scr2);
     break;
   case 2:
@@ -47,6 +64,7 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
       "Turns and shoots top middle flag\n"
       "Turns and parks on alliance platform");
     auton_sel = 2;
+    lv_obj_set_style(scr3, &red);
     lv_scr_load(scr2);
     break;
   case 3:
@@ -56,6 +74,7 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
      "Drives Forward and turns bottom flag\n"
      "Backs up, turns, and flips the cap by the flags");
     auton_sel = 3;
+    lv_obj_set_style(scr3, &blue);
     lv_scr_load(scr2);
     break;
   case 4:
@@ -64,18 +83,21 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
       "Turns and shoots top middle flag\n"
       "Turns and parks on alliance platform");
     auton_sel = 4;
+    lv_obj_set_style(scr3, &blue);
     lv_scr_load(scr2);
     break;
   case 5:
     lv_label_set_text(g_sb_label, "Skills Auton1");
     lv_label_set_text(autonTxt, "");
     auton_sel = 5;
+    lv_obj_set_style(scr3, &red);
     lv_scr_load(scr2);
     break;
   case 6:
     lv_label_set_text(g_sb_label, "Skills Auton2");
     lv_label_set_text(autonTxt, "");
     auton_sel = 6;
+    lv_obj_set_style(scr3, &red);
     lv_scr_load(scr2);
     break;
   }
@@ -104,6 +126,18 @@ static lv_res_t btn_click_action(lv_obj_t * autonBtn)
 static lv_res_t left(lv_obj_t * rightButton)
 {
 
+  static lv_style_t red;
+  lv_style_copy(&red, &lv_style_scr);
+  red.body.main_color = LV_COLOR_RED;
+  red.body.grad_color = LV_COLOR_RED;
+  red.body.border.color = LV_COLOR_RED;
+
+  static lv_style_t blue;
+  lv_style_copy(&blue, &lv_style_scr);
+  blue.body.main_color = LV_COLOR_BLUE;
+  blue.body.grad_color = LV_COLOR_BLUE;
+  blue.body.border.color = LV_COLOR_BLUE;
+
   if (auton_sel == 1) //if rolling list reaches 1, the last value, it will run this loop
   {
     auton_sel = 6; //the value is set back to the top so the list appears to forever be able to scroll through
@@ -120,12 +154,14 @@ static lv_res_t left(lv_obj_t * rightButton)
      "Backs up and shoots top and middle flags\n"
      "Drives Forward and turns bottom flag\n"
      "Backs up, turns, and flips the cap by the flags");
+     lv_obj_set_style(scr3, &red);
     break;
   case 2:
     lv_label_set_text(g_sb_label, "Red Back Auton");
     lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
       "Turns and shoots top middle flag\n"
       "Turns and parks on alliance platform");
+      lv_obj_set_style(scr3, &red);
     break;
   case 3:
     lv_label_set_text(g_sb_label, "Blue Front Auton");
@@ -133,20 +169,24 @@ static lv_res_t left(lv_obj_t * rightButton)
      "Backs up and shoots top and middle flags\n"
      "Drives Forward and turns bottom flag\n"
      "Backs up, turns, and flips the cap by the flags");
+     lv_obj_set_style(scr3, &blue);
     break;
   case 4:
     lv_label_set_text(g_sb_label, "Blue Back Auton");
     lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
       "Turns and shoots top middle flag\n"
       "Turns and parks on alliance platform");
+      lv_obj_set_style(scr3, &blue);
     break;
   case 5:
     lv_label_set_text(g_sb_label, "Skills Auton1");
     lv_label_set_text(autonTxt, "");
+    lv_obj_set_style(scr3, &red);
     break;
   case 6:
     lv_label_set_text(g_sb_label, "Skills Auton2");
     lv_label_set_text(autonTxt, "");
+    lv_obj_set_style(scr3, &red);
     break;
   }
 
@@ -155,6 +195,18 @@ static lv_res_t left(lv_obj_t * rightButton)
 
 static lv_res_t right(lv_obj_t * leftButton)
 {
+
+  static lv_style_t red;
+  lv_style_copy(&red, &lv_style_scr);
+  red.body.main_color = LV_COLOR_RED;
+  red.body.grad_color = LV_COLOR_RED;
+  red.body.border.color = LV_COLOR_RED;
+
+  static lv_style_t blue;
+  lv_style_copy(&blue, &lv_style_scr);
+  blue.body.main_color = LV_COLOR_BLUE;
+  blue.body.grad_color = LV_COLOR_BLUE;
+  blue.body.border.color = LV_COLOR_BLUE;
 
   if (auton_sel == 6) //if int is at 6 it has reached the top value of the list
   {
@@ -172,12 +224,14 @@ static lv_res_t right(lv_obj_t * leftButton)
      "Backs up and shoots top and middle flags\n"
      "Drives Forward and turns bottom flag\n"
      "Backs up, turns, and flips the cap by the flags");
+     lv_obj_set_style(scr3, &red);
     break;
   case 2:
     lv_label_set_text(g_sb_label, "Red Back Auton");
     lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
       "Turns and shoots top middle flag\n"
       "Turns and parks on alliance platform");
+      lv_obj_set_style(scr3, &red);
     break;
   case 3:
     lv_label_set_text(g_sb_label, "Blue Front Auton");
@@ -185,20 +239,24 @@ static lv_res_t right(lv_obj_t * leftButton)
      "Backs up and shoots top and middle flags\n"
      "Drives Forward and turns bottom flag\n"
      "Backs up, turns, and flips the cap by the flags");
+     lv_obj_set_style(scr3, &blue);
     break;
   case 4:
     lv_label_set_text(g_sb_label, "Blue Back Auton");
     lv_label_set_text(autonTxt, "Gets ball from cap by platforms\n"
       "Turns and shoots top middle flag\n"
       "Turns and parks on alliance platform");
+      lv_obj_set_style(scr3, &blue);
     break;
   case 5:
     lv_label_set_text(g_sb_label, "Skills Auton1");
     lv_label_set_text(autonTxt, "");
+    lv_obj_set_style(scr3, &red);
     break;
   case 6:
     lv_label_set_text(g_sb_label, "Skills Auton2");
     lv_label_set_text(autonTxt, "");
+    lv_obj_set_style(scr3, &red);
     break;
   }
 
@@ -217,21 +275,74 @@ static lv_res_t confirm(lv_obj_t * confirmBtn)//when the confirm button is press
 static lv_res_t gyroReset(lv_obj_t * gyroResetBtn)//when gyro reset button is pressed
 {
 
-  resetGyro();//runs the resent gyro function so robot can be readjusted and gyro then rezeroed
+  resetGyro();//runs the reset gyro function so robot can be readjusted and gyro then rezeroed
 
   return LV_RES_OK;
 }
 
-// void my_refr_func(void* p)
-// {
-//     lv_label_set_text(my_label, "time and date");
-// }
-//
-// /*Call `my_refr_func` in every 1000 ms with a LOW priority*/
-// lv_task_create(my_refr_func, 1000, LV_TASK_PRIO_LOW, NULL);
+static lv_res_t returnToScr2(_lv_obj_t *returnBtn)
+{
 
-/*This function wil be called periodically to refresh the label*/
+  lv_scr_load(scr2);
 
+  return LV_RES_OK;
+}
+
+static lv_res_t runAuton(_lv_obj_t *runAutonBtn)
+{
+
+  autonomous(); //runs selected auton when the button is pressed
+
+  return LV_RES_OK;
+}
+
+void label_refresher_gyro(void * p) //begins the loop that will autoupdate the gyro value label
+{
+  static uint32_t prev_value = 0;
+
+  if(prev_value != getGyroSensor())
+  {
+    if(lv_obj_get_screen(gyroValue) == scr3)
+    {
+      char buf[32];
+      sprintf(buf, "Gyro: %d", int(getGyroSensor()));
+      lv_label_set_text(gyroValue, buf);
+    }
+    prev_value = getGyroSensor();
+  }
+}
+
+void label_refresher_left_drive(void * p) //begins the loop that will autoupdate the gyro value label
+{
+  static uint32_t prev_value = 0;
+
+  if(prev_value != getGyroSensor())
+  {
+    if(lv_obj_get_screen(gyroValue) == scr3)
+    {
+      char buf[32];
+      sprintf(buf, "Gyro: %d", int(getGyroSensor()));
+      lv_label_set_text(gyroValue, buf);
+    }
+    prev_value = getGyroSensor();
+  }
+}
+
+void label_refresher_right_drive(void * p) //begins the loop that will autoupdate the gyro value label
+{
+    static uint32_t prev_value = 0; //creates a new value
+
+    if(prev_value != getRawGyro()) //looks if created value is not equal to the gyro's value
+    {
+        if(lv_obj_get_screen(gyroValue) == scr3) //if label is on scr3
+        {
+            char buf[32];
+            sprintf(buf, "Gyro: %d", int(getRawGyro()));
+            lv_label_set_text(gyroValue, buf);
+        }
+        prev_value = getRawGyro();
+    }
+}
 
 void gui(void)
 {
@@ -245,6 +356,8 @@ void gui(void)
      static lv_style_t toggle_btn_pr;
      static lv_style_t confirm_btn_rel;
      static lv_style_t confirm_btn_pr;
+     static lv_style_t rezero_btn_rel;
+     static lv_style_t rezero_btn_pr;
 
      lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
      //sets the style for when the button is not pressed
@@ -260,9 +373,7 @@ void gui(void)
      style_btn_pr.body.main_color = LV_COLOR_BLUE;
      style_btn_pr.body.grad_color = LV_COLOR_BLUE;
      style_btn_pr.body.border.color = LV_COLOR_GREEN;
-     style_btn_pr.body.border.width = 2;
      style_btn_pr.body.border.opa = LV_OPA_100;
-     style_btn_pr.body.radius = 5;
 
      /*Creates a new style for the button matrix back ground to be transparent*/
      static lv_style_t style_bg;
@@ -317,9 +428,6 @@ void gui(void)
      toggle_btn_pr.body.main_color = LV_COLOR_NAVY;
      toggle_btn_pr.body.grad_color = LV_COLOR_NAVY;
      toggle_btn_pr.body.border.color = LV_COLOR_SILVER;
-     toggle_btn_pr.body.border.width = 2;
-     toggle_btn_pr.body.border.opa = LV_OPA_50;
-     toggle_btn_pr.body.radius = 5;
 
      /*Create a normal button*/
      lv_obj_t * autonBtn = lv_btn_create(scr2, NULL);
@@ -379,10 +487,6 @@ void gui(void)
      //sets the style for when the button is pressed
      confirm_btn_pr.body.main_color = LV_COLOR_YELLOW;
      confirm_btn_pr.body.grad_color = LV_COLOR_RED;
-     confirm_btn_pr.body.border.color = LV_COLOR_SILVER;
-     confirm_btn_pr.body.border.width = 2;
-     confirm_btn_pr.body.border.opa = LV_OPA_50;
-     confirm_btn_pr.body.radius = 5;
 
      lv_obj_t * confirmBtn = lv_btn_create(scr2, NULL);
      lv_obj_set_width(confirmBtn, 50);
@@ -396,24 +500,62 @@ void gui(void)
      confirmTxt = lv_label_create(confirmBtn, NULL);
      lv_label_set_text(confirmTxt, SYMBOL_OK);
 
-     while(gyro)
-     {
-       gyroValue = lv_label_create(scr3, NULL);
-       lv_obj_set_pos(gyroValue, 0, 200);
-       // lv_label_set_text(gyroValue, "Gyro: %d", getGyroSensor());
-     }
+     gyroValue = lv_label_create(scr3, NULL);
+     lv_obj_set_pos(gyroValue, 10, 0);
+     lv_obj_set_style(gyroValue, &style_txt);
+     lv_task_create(label_refresher_gyro, 100, LV_TASK_PRIO_MID, NULL);
+
+     lv_style_copy(&rezero_btn_rel, &lv_style_plain);
+     //sets the style for when the button is not pressed
+     rezero_btn_rel.body.main_color = LV_COLOR_BLACK;
+     rezero_btn_rel.body.grad_color = LV_COLOR_BLACK;
+     rezero_btn_rel.body.border.color = LV_COLOR_WHITE;
+     rezero_btn_rel.body.border.width = 2;
+     rezero_btn_rel.body.border.opa = LV_OPA_50;
+     rezero_btn_rel.body.radius = 5;
+
+     lv_style_copy(&rezero_btn_pr, &rezero_btn_rel);
+     //sets the style for when the button is not pressed
+     rezero_btn_pr.body.main_color = LV_COLOR_GRAY;
+     rezero_btn_pr.body.grad_color = LV_COLOR_GRAY;
 
      lv_obj_t * gyroResetBtn = lv_btn_create(scr3, NULL);
      lv_obj_set_height(gyroResetBtn, 40);
-     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_REL, &confirm_btn_rel);
-     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_PR, &confirm_btn_pr);
+     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_REL, &rezero_btn_rel);
+     lv_btn_set_style(gyroResetBtn, LV_BTN_STYLE_PR, &rezero_btn_pr);
      lv_btn_set_action(gyroResetBtn, LV_BTN_ACTION_CLICK, gyroReset);
      lv_obj_set_protect(gyroResetBtn, LV_PROTECT_POS);
-     lv_obj_set_pos(gyroResetBtn, 320, 200);
+     lv_obj_set_pos(gyroResetBtn, 325, 15);
 
      gyroResetLbl = lv_label_create(gyroResetBtn, NULL);
      lv_label_set_text(gyroResetLbl, "Zero Gyro");
      lv_obj_set_style(gyroResetLbl, &style_txt);
+
+     lv_obj_t * returnBtn = lv_btn_create(scr3, NULL);
+     lv_obj_set_width(returnBtn, 50);
+     lv_obj_set_height(returnBtn, 50);
+     lv_btn_set_style(returnBtn, LV_BTN_STYLE_REL, &rezero_btn_rel);
+     lv_btn_set_style(returnBtn, LV_BTN_STYLE_PR, &rezero_btn_pr);
+     lv_btn_set_action(returnBtn, LV_BTN_ACTION_CLICK, returnToScr2);
+     lv_obj_set_protect(returnBtn, LV_PROTECT_POS);
+     lv_obj_set_pos(returnBtn, 400, 170);
+
+     returnTxt = lv_label_create(returnBtn, NULL);
+     lv_label_set_text(returnTxt, SYMBOL_LEFT);
+     lv_obj_set_style(returnTxt, &style_txt);
+
+     lv_obj_t * runAutonBtn = lv_btn_create(scr3, NULL);
+     lv_cont_set_fit(runAutonBtn, true, false); //allows width to fit label but set the height
+     lv_obj_set_height(runAutonBtn, 50);
+     lv_btn_set_style(runAutonBtn, LV_BTN_STYLE_REL, &rezero_btn_rel);
+     lv_btn_set_style(runAutonBtn, LV_BTN_STYLE_PR, &rezero_btn_pr);
+     lv_btn_set_action(runAutonBtn, LV_BTN_ACTION_CLICK, runAuton);
+     lv_obj_set_protect(runAutonBtn, LV_PROTECT_POS);
+     lv_obj_set_pos(runAutonBtn, 0, 170);
+
+     runAutonTxt = lv_label_create(runAutonBtn, NULL);
+     lv_label_set_text(runAutonTxt, "Run Auton");
+     lv_obj_set_style(runAutonTxt, &style_txt);
 
 }
 
