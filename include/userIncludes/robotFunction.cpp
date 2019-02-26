@@ -8,7 +8,7 @@
 #include "headers/pidController.h"
 #include "headers/liftController.h"
 #include "headers/gyroFunctions.h"
-#include "headers/accelerometer.h"
+// #include "headers/accelerometer.h"
 #include "headers/filters.h"
 #include "headers/pollSensors.h"
 #include "headers/thresholds.h"
@@ -50,11 +50,6 @@ float getRightDriveSensor()
 	return motorArray[frontRightDrive]->get_position();
 }
 
-float getLiftSensor()
-{
-	return motorArray[lift]->get_position();
-}
-
 float getIntakeSensor()
 {
 	return motorArray[intakeMotor]->get_position();
@@ -83,6 +78,11 @@ float getAccelerometerZ()
 bool isLauncherLoaded()
 {
 	return getLauncherSensor();
+}
+
+bool isFlipperDown()
+{
+	return getFlipperSensor();
 }
 
 void moveLift(int speed)
@@ -567,7 +567,7 @@ void robotFunction(void* param)
 
 			else if (chassisDirection == accelerometerPark)
 			{
-				
+
 			}
 
 			else// otherwise

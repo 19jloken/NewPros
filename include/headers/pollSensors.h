@@ -27,6 +27,7 @@ void resetLeftDriveSensor();
 void resetRightDriveSensor();
 void resetStrafeDriveSensor();
 bool getLauncherSensor();
+bool getFlipperSensor();
 
 bool getAutoSensor();
 bool getSideSensor();

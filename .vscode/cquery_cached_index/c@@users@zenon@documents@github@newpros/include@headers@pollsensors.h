@@ -13,13 +13,22 @@ void pollSensors(void* param);
 extern demaFilter gyroFilter;
 extern demaFilter leftDriveFilter;
 extern demaFilter rightDriveFilter;
+extern medianFilter accelerometer_xFilter;
+extern medianFilter accelerometer_yFilter;
+extern medianFilter accelerometer_zFilter;
 
 void resetGyro();
 float getRawGyro();
+float getLiftSensor();
+float getAccelerometerX();
+float getAccelerometerY();
+float getAccelerometerZ();
 void resetLeftDriveSensor();
 void resetRightDriveSensor();
 void resetStrafeDriveSensor();
 bool getLauncherSensor();
+bool getFlipperSensor();
+
 bool getAutoSensor();
 bool getSideSensor();
 

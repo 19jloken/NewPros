@@ -32,7 +32,7 @@ void initialize()
 {
   // userAutonomousTask.suspend();
   robotFunctionTask.suspend();
-  firstGui();
+  gui();
 	// pros::lcd::initialize();
   // pros::lcd::set_text(1, "DO NOT MOVE THE ROBOT");
   // pros::lcd::set_text(2, "Calibrating");
@@ -42,10 +42,10 @@ void initialize()
   motorArray[1]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[2]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[3]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  motorArray[4]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  motorArray[4]->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   motorArray[5]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  motorArray[6]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  motorArray[7]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  motorArray[6]->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  motorArray[7]->set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	addMotor(0);
 	addMotor(1);
@@ -77,6 +77,7 @@ void initialize()
   motorArray[backRightDrive]->set_reversed(true);
   motorArray[shooter]->set_reversed(true);
   motorArray[intakeMotor]->set_reversed(true);
+  motorArray[flipperMotor]->set_reversed(true);
 
   int x = 0;
   while(x < 500)
@@ -109,5 +110,4 @@ void initialize()
 void competition_initialize()
 {
   // pros::lcd::set_text(1, "Hello PROS User!ci");
-	autonomousSelection();
 }

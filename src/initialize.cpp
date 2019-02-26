@@ -38,7 +38,6 @@ void initialize()
   // pros::lcd::set_text(2, "Calibrating");
   // pros::c::adi_analog_calibrate(5);
 
-
   motorArray[0]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[1]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   motorArray[2]->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
