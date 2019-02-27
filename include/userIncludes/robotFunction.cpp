@@ -242,9 +242,9 @@ void robotFunction(void* param)
 	initializePID(&leftDrivePID, .11, .2, .0, 0, 254, 0, 635);
 	initializePID(&rightDrivePID, .11, .2, .0, 0, 254, 0, 635);
 	initializePID(&drivePID, .13, .1, .001, 0, 400, 0, 635);
-	initializePID(&gyroPID, .1, .025, .1, 10, 800, 0, 300);
+	initializePID(&gyroPID, .12, .025, .1, 5, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);
-	initializePID(&straightGyroPID, .0025, .00, .0, 0, 1000, 0, 500);
+	initializePID(&straightGyroPID, .001, .0, .0, 0, 1000, 0, 500);
 
 
 

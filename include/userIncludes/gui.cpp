@@ -571,7 +571,8 @@ void gui(void)
      lv_obj_set_height(runAutonBtn, 50);
      lv_btn_set_style(runAutonBtn, LV_BTN_STYLE_REL, &rezero_btn_rel);
      lv_btn_set_style(runAutonBtn, LV_BTN_STYLE_PR, &rezero_btn_pr);
-     lv_btn_set_action(runAutonBtn, LV_BTN_ACTION_CLICK, runAuton);
+     lv_btn_set_action(runAutonBtn, LV_BTN_ACTION_PR, runAuton);
+     lv_btn_set_toggle(runAutonBtn, true);
      lv_obj_set_protect(runAutonBtn, LV_PROTECT_POS);
      lv_obj_set_pos(runAutonBtn, 0, 170);
 
@@ -580,12 +581,12 @@ void gui(void)
      lv_obj_set_style(runAutonTxt, &style_txt);
 
      rightDriveTxt = lv_label_create(scr3, NULL);
-     lv_obj_set_pos(rightDriveTxt, 10, 10);
+     lv_obj_set_pos(rightDriveTxt, 10, 50);
      lv_obj_set_style(rightDriveTxt, &style_txt);
      lv_task_create(label_refresher_right_drive, 100, LV_TASK_PRIO_MID, NULL);
 
      leftDriveTxt = lv_label_create(scr3, NULL);
-     lv_obj_set_pos(leftDriveTxt, 10, 20);
+     lv_obj_set_pos(leftDriveTxt, 10, 100);
      lv_obj_set_style(leftDriveTxt, &style_txt);
      lv_task_create(label_refresher_left_drive, 100, LV_TASK_PRIO_MID, NULL);
 
@@ -596,8 +597,7 @@ void gui(void)
      lv_btn_set_style(zeroDrive, LV_BTN_STYLE_PR, &rezero_btn_pr);
      lv_btn_set_action(zeroDrive, LV_BTN_ACTION_CLICK, runAuton);
      lv_obj_set_protect(zeroDrive, LV_PROTECT_POS);
-     lv_obj_set_pos(zeroDrive, 400, 20);
-
+     lv_obj_set_pos(zeroDrive, 320, 30);
      zeroDriveTxt = lv_label_create(zeroDrive, NULL);
      lv_label_set_text(zeroDriveTxt, "Zero Drive");
      lv_obj_set_style(zeroDriveTxt, &style_txt);

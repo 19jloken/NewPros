@@ -8,6 +8,7 @@
 #include "headers/pidController.h"
 #include "headers/liftController.h"
 #include "headers/gyroFunctions.h"
+// #include "headers/accelerometer.h"
 #include "headers/filters.h"
 #include "headers/pollSensors.h"
 #include "headers/thresholds.h"
@@ -49,11 +50,6 @@ float getRightDriveSensor()
 	return motorArray[frontRightDrive]->get_position();
 }
 
-float getLiftSensor()
-{
-	return motorArray[lift]->get_position();
-}
-
 float getIntakeSensor()
 {
 	return motorArray[intakeMotor]->get_position();
@@ -64,9 +60,29 @@ float getGyroSensor()
 	return getDema(&gyroFilter);
 }
 
+float getAccelerometerX()
+{
+	return getMedian(&accelerometer_xFilter);
+}
+
+float getAccelerometerY()
+{
+	return getMedian(&accelerometer_yFilter);
+}
+
+float getAccelerometerZ()
+{
+	return getMedian(&accelerometer_zFilter);
+}
+
 bool isLauncherLoaded()
 {
 	return getLauncherSensor();
+}
+
+bool isFlipperDown()
+{
+	return getFlipperSensor();
 }
 
 void moveLift(int speed)
@@ -226,9 +242,9 @@ void robotFunction(void* param)
 	initializePID(&leftDrivePID, .11, .2, .0, 0, 254, 0, 635);
 	initializePID(&rightDrivePID, .11, .2, .0, 0, 254, 0, 635);
 	initializePID(&drivePID, .13, .1, .001, 0, 400, 0, 635);
-	initializePID(&gyroPID, .1, .025, .1, 10, 800, 0, 300);
+	initializePID(&gyroPID, .12, .025, .1, 5, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);
-	initializePID(&straightGyroPID, .0025, .00, .0, 0, 1000, 0, 500);
+	initializePID(&straightGyroPID, .001, .0, .0, 0, 1000, 0, 500);
 
 
 
@@ -547,6 +563,11 @@ void robotFunction(void* param)
 
 				if(gyroDifference(getGyroSensor(), heading) >= gyroDifference(heading, chassisDistance))
 				driveDone = true;
+			}
+
+			else if (chassisDirection == accelerometerPark)
+			{
+
 			}
 
 			else// otherwise

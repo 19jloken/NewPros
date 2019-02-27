@@ -9,19 +9,19 @@
 void autonomous1 ()
 {
   //Front red flipps all red side flags and gets 2 caps
-  addCommand(gyroDriveStraight, 3000, intake, 127);
-  addCommand(gyroDriveStraight, -2800);
-  addCommand(gyroTurn, -1300);///////
-  addCommand(gyroDriveStraight, 150);
-  addCommand(pause, drive);
-  addCommand(launcher);
-  addCommand(end, intake,gyroTurn, -250);////////
-  addCommand(gyroDriveStraight, 3400);//////
-  addCommand(gyroDriveStraight, -1550);
-  addCommand(gyroTurn, 1350,intake, -127);////////
-  addCommand(gyroDriveStraight, 900);
-  addCommand(gyroDriveStraight, 900);
-  addCommand(gyroDriveStraight, 900);
+  addCommand(gyroDriveStraight, 0, 3000, intake, 127);
+  addCommand(gyroDriveStraight, 0, -2800);
+  addCommand(gyroTurn, 30);///////
+  // addCommand(gyroDriveStraight, 150);
+  // addCommand(pause, drive);
+  // addCommand(launcher);
+  // addCommand(end, intake,gyroTurn, -250);////////
+  // addCommand(gyroDriveStraight, 3400);//////
+  // addCommand(gyroDriveStraight, -1550);
+  // addCommand(gyroTurn, 1350,intake, -127);////////
+  // addCommand(gyroDriveStraight, 900);
+  // addCommand(gyroDriveStraight, 900);
+  // addCommand(gyroDriveStraight, 900);
 }
 void autonomous2 ()
 {

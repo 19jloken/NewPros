@@ -22,7 +22,8 @@ void autonomous()
   // pros::lcd::set_text(1, "Hello PROS Usera!");
   //pros::lcd::clear();
   robotFunctionTask.resume();
-  // resetRobotFunction();
+  resetRobotFunction();
+  resetGyro();
   // if(clearGyroBeforeAuton)// if the gyro should reset when the auton starts
   // {
   //    resetGyro();// reset the gyro

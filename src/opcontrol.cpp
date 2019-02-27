@@ -212,34 +212,34 @@ void singleControllerDrive()
     rightIn = tempRightIn;
   }
 
-  strafe = master.get_digital(E_CONTROLLER_DIGITAL_R1) + master.get_digital(E_CONTROLLER_DIGITAL_R2) - master.get_digital(E_CONTROLLER_DIGITAL_L1) - master.get_digital(E_CONTROLLER_DIGITAL_L2);
+  strafe = 2*(master.get_digital(E_CONTROLLER_DIGITAL_R2)) - 2*(master.get_digital(E_CONTROLLER_DIGITAL_L2));
 
   moveDrive(leftIn, rightIn, strafe);
 
-  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
   {
-    while(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+    while(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
       pros::delay(5);
     }
      autonomous();
-     while(!master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+     while(!master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
       pros::delay(5);
     }
-    while(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+    while(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
       pros::delay(5);
     }
   }
 
-  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-  {
-    moveIntake(-127);
-  }
-  else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
   {
     moveIntake(127);
+  }
+  else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+  {
+    moveIntake(-127);
   }
   else
   {
@@ -248,15 +248,28 @@ void singleControllerDrive()
 
   if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
   {
-    moveFlipper(-127);
-  }
-  else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
-  {
     moveFlipper(127);
+  }
+  else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
+  {
+    moveFlipper(-127);
   }
   else
   {
     moveFlipper(0);
+  }
+
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+  {
+    moveLift(127);
+  }
+  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+  {
+    moveLift(-127);
+  }
+  else
+  {
+    moveLift(0);
   }
 
 
@@ -269,7 +282,7 @@ void singleControllerDrive()
       launcherWasLoaded = true;
       zeroTimer(&opLauncherTimer);
       stopTimer(&opLauncherTimer);
-      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
       {
         moveLauncher(127);
       }
