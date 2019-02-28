@@ -5,6 +5,7 @@
 extern const int driveThreshold;
 extern const int mobileThreshold;
 extern const int liftThreshold;
+extern const int flipperThreshold;
 extern const int barThreshold;
 extern const int intakeThreshold;
 extern const int gyroThreshold;

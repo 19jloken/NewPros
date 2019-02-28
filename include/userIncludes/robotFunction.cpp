@@ -210,9 +210,12 @@ void robotFunction(void* param)
 	int largestDriveInput = 127;
 
 	float liftSpeed = 0;
-	float liftPosition = 0;
+	float liftPosition = -1;
 	int liftDirection = 0;
 	float maxLiftTime = 0;
+
+	float flipperPosition = -1;
+	float flipperSpeed = 0;
 
 	int intakeTarget = 0;
 	float maxIntakeTime = 0;
@@ -242,7 +245,7 @@ void robotFunction(void* param)
 	initializePID(&leftDrivePID, .11, .2, .0, 0, 254, 0, 635);
 	initializePID(&rightDrivePID, .11, .2, .0, 0, 254, 0, 635);
 	initializePID(&drivePID, .13, .1, .001, 0, 400, 0, 635);
-	initializePID(&gyroPID, .12, .025, .1, 5, 800, 0, 300);
+	initializePID(&gyroPID, .1, .025, .1, 0, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);
 	initializePID(&straightGyroPID, .001, .0, .0, 0, 1000, 0, 500);
 
@@ -588,47 +591,59 @@ void robotFunction(void* param)
 
 		///////////////////////////////////// End Drive /////////////////////////////////////////////////////////////////////////////////////////////////
 
-		if(!liftDone)// if the lift is not done
+		if(liftPosition != -1)// if the lift is not done
 		{
-			if(liftDirection == holdLift)
-			{
-				moveLift(getPower((&liftHolder), liftSensor));
-			}
-			else if(liftDirection == setLift)
-			{
-				moveLift(getPower((&liftHolder), liftSensor));
-				if(fabs(liftSensor - liftPosition) <= liftThreshold)
+				if((liftSensor > (liftPosition+liftThreshold)))// if the lift needs to go down
 				{
-					startTimer(&liftPIDTimer);
+					if(fabs(liftSensor-liftPosition) < 300)
+					{
+						moveLift(-liftSpeed/3);
+					}
+					else
+					{
+						moveLift(-liftSpeed);// move the lift down
+				  }
 				}
-				if(currentTime(&liftPIDTimer) >= 100)
-				liftDone = true;
-			}
-			else if(liftDirection == 1 || liftDirection == 2)
-			{
-				if((liftSensor > (liftPosition+liftThreshold))&&(liftSensor > (liftLower+liftThreshold)))// if the lift needs to go down
+				else if((liftSensor < (liftPosition-liftThreshold)))// if the lift should go up
 				{
-					moveLift(-liftSpeed);// move the lift down
-				}
-				else if((liftSensor < (liftPosition-liftThreshold))&&(liftSensor < (liftUpper-liftThreshold)))// if the lift should go up
-				{
-					moveLift(liftSpeed);// move the lift up
+					if(fabs(liftSensor-liftPosition) < 300)
+					{
+						moveLift(liftSpeed/3);
+					}
+					else
+					{
+						moveLift(liftSpeed);// move the lift down
+				  }
 				}
 				else// otherwise
 				{
-					liftDone = true;// the lift is done
+					moveLift(0);
 				}
-
-				if(liftDirection == 1)
-				liftDone = liftSensor <= (liftPosition+liftThreshold);
-				else if(liftDirection == 2)
-				liftDone = liftSensor >= (liftPosition-liftThreshold);
-			}
 		}
 		else// otherwise
 		{
 			moveLift(0);// stop the lift
 			liftDone = true;
+		}
+
+		if(flipperPosition != -1)// if the lift is not done
+		{
+				if((flipperSensor > (flipperPosition+flipperThreshold)))// if the lift needs to go down
+				{
+					moveFlipper(flipperSpeed);// move the lift down
+				}
+				else if((flipperSensor < (flipperPosition-flipperThreshold)))// if the lift should go up
+				{
+					moveFlipper(flipperSpeed);// move the lift up
+				}
+				else// otherwise
+				{
+					moveFlipper(10*sgn(flipperSpeed));
+				}
+		}
+		else// otherwise
+		{
+			moveFlipper(0);// stop the lift
 		}
 
 		///////////////////////////////////// End Lift /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -788,18 +803,20 @@ void robotFunction(void* param)
 					break;
 
 					case lift:
-					if(liftDone)
-					{
-						zeroTimer(&liftTimer);
-						maxLiftTime = 0;
-						liftDone = false;
 						commandReadPos++;
 						liftSpeed = instructions[commandReadPos];
 						commandReadPos++;
 						liftPosition = instructions[commandReadPos];
 						commandReadPos++;
-						liftDirection = (liftSensor > liftPosition) ? 1:2;
-					}
+					break;
+
+					case flipper:
+
+						commandReadPos++;
+						flipperSpeed = instructions[commandReadPos];
+						commandReadPos++;
+						flipperPosition = instructions[commandReadPos];
+						commandReadPos++;
 					break;
 
 					case holdLift:

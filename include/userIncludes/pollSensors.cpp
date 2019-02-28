@@ -32,8 +32,7 @@ medianFilter accelerometer_zFilter;
  // pros::ADIEncoder rightDriveSensor (3, 4, false);
  pros::ADIGyro gyroSensor (3);
  pros::ADIDigitalIn launcherSensor(1);
- pros::ADIDigitalIn flipperSensor(2);
- pros::ADIAnalogIn lift_sensor(3);
+ pros::ADIAnalogIn lift_sensor(6);
  pros::ADIAnalogIn acc_x (ACCELEROMETER_X);
  pros::ADIAnalogIn acc_y (ACCELEROMETER_Y);
  pros::ADIAnalogIn acc_z (ACCELEROMETER_Z);
@@ -96,13 +95,13 @@ bool getLauncherSensor()
 {
 	return launcherSensor.get_value();
 }
-bool getFlipperSensor()
+float getFlipperSensor()
 {
-  return flipperSensor.get_value();
+  return motorArray[frontLeftDrive]->get_position();
 }
 float getLiftSensor()
 {
-	return lift_sensor.get_value();
+	return 4095-(int)lift_sensor.get_value();
 }
 float getRawAccelerometerX()
 {

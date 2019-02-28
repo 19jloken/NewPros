@@ -9,9 +9,10 @@
 void autonomous1 ()
 {
   //Front red flipps all red side flags and gets 2 caps
-  addCommand(gyroDriveStraight, 0, 3000, intake, 127);
+  addCommand(intake, 127);
+  addCommand(gyroDriveStraight, 0, 3000);
   addCommand(gyroDriveStraight, 0, -2800);
-  addCommand(gyroTurn, 30);///////
+  addCommand(gyroTurn, 127, 90);///////
   // addCommand(gyroDriveStraight, 150);
   // addCommand(pause, drive);
   // addCommand(launcher);
@@ -70,6 +71,8 @@ void autonomous4 ()
 }
 void autonomous5 ()
 {
+  addCommand(lift, 127, 1500);
+  addCommand(flipper, -100, 10);
 }
 void autonomous6 ()
 {

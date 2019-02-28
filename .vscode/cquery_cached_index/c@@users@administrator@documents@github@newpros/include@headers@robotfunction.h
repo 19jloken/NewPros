@@ -3,7 +3,8 @@
 
 //#define leftDriveSensor 1
 //#define rightDriveSensor 1
-#define liftSensor 1
+#define liftSensor getLiftSensor()
+#define flipperSensor getFlipperSensor()
 //#define gyroSensor 1
 #define mobileSensor 1
 #include "pros/rtos.hpp"
