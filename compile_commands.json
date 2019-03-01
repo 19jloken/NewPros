@@ -28,11 +28,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/opcontrol.cpp.o",
-            "src\\opcontrol.cpp"
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
         ],
-        "directory": "C:\\Users\\Administrator\\Documents\\GitHub\\NewPros",
-        "file": "src\\opcontrol.cpp"
+        "directory": "C:\\Users\\Admin.000\\Documents\\GitHub\\NewPros",
+        "file": "src\\initialize.cpp"
     },
     {
         "arguments": [
@@ -66,7 +66,7 @@
             "bin/autonomous.cpp.o",
             "src\\autonomous.cpp"
         ],
-        "directory": "C:\\Users\\Administrator\\Documents\\GitHub\\NewPros",
+        "directory": "C:\\Users\\Admin.000\\Documents\\GitHub\\NewPros",
         "file": "src\\autonomous.cpp"
     },
     {
@@ -98,10 +98,10 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/initialize.cpp.o",
-            "src\\initialize.cpp"
+            "bin/opcontrol.cpp.o",
+            "src\\opcontrol.cpp"
         ],
-        "directory": "C:\\Users\\Administrator\\Documents\\GitHub\\NewPros",
-        "file": "src\\initialize.cpp"
+        "directory": "C:\\Users\\Admin.000\\Documents\\GitHub\\NewPros",
+        "file": "src\\opcontrol.cpp"
     }
 ]
