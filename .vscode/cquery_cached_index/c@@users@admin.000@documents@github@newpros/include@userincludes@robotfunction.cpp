@@ -20,7 +20,7 @@
 pros::Task robotFunctionTask(robotFunction, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "robotFunctionTask");
 
 
-int instructions[300];
+int instructions[600];
 int acceleration[500];
 int commandReadPos = 0;
 int commandWritePos = 0;
@@ -32,7 +32,7 @@ void resetRobotFunction()
 	commandReadPos = 0;
 	commandWritePos = 0;
 	int x = 0;
-	while(x < 300)
+	while(x < 600)
 	{
 		instructions[x] = 0;
 		x++;
@@ -244,7 +244,7 @@ void robotFunction(void* param)
 
 	initializePID(&leftDrivePID, .11, .2, .0, 0, 254, 0, 635);
 	initializePID(&rightDrivePID, .11, .2, .0, 0, 254, 0, 635);
-	initializePID(&drivePID, .13, .1, .001, 0, 400, 0, 635);
+	initializePID(&drivePID, .12, .1, .001, 0, 400, 0, 635);
 	initializePID(&gyroPID, .1, .025, .1, 0, 800, 0, 300);
 	// initializePID(&straightGyroPID, .08, .01, .0, 0, 1000, 0, 500);
 	initializePID(&straightGyroPID, .001, .0, .0, 0, 1000, 0, 500);

@@ -54,9 +54,9 @@ void autonomous()
     case 6:
     autonomous6();
     break;
-  //   case 7:
-  //   autonomous7();
-  //   break;
+    case 7:
+    autonomous7();
+    break;
   //   case 8:
   //   autonomous8();
   //   break;
